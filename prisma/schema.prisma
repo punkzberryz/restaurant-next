@@ -1,0 +1,78 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
+}
+
+enum UserRole {
+  ADMIN
+  USER
+}
+
+model User {
+  id             String    @id
+  email          String?   @unique
+  hashedPassword String?
+  displayName    String
+  role           UserRole  @default(USER)
+  sessions       Session[]
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+}
+
+model Session {
+  id        String   @id
+  userId    String
+  expiresAt DateTime
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Category {
+  id    String @id @default(cuid())
+  name  String
+  foods Food[] @relation("CategoryToFood")
+}
+
+enum FoodUnit {
+  KG
+  PLATE
+  CUP
+}
+
+model Food {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  unit        FoodUnit
+  price       Float
+  categoryId  String
+  images      Image[]
+  category    Category @relation("CategoryToFood", fields: [categoryId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([categoryId])
+}
+
+model Image {
+  id        String   @id @default(uuid())
+  foodId    String
+  url       String
+  food      Food     @relation(fields: [foodId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([foodId])
+}

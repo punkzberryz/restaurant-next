@@ -1,0 +1,21 @@
+version: '3.9'
+name: 'restaurant'
+services:
+  db:
+    platform: linux/x86_64
+    image: mysql:5.7
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: 'restaurant'
+      MYSQL_USER: 'user'
+      MYSQL_PASSWORD: 'password'
+      MYSQL_ROOT_PASSWORD: 'password'
+    restart: always
+    container_name: restaurantContainer  
+    volumes:
+      - ./my-db:/var/lib/mysql
+      
+volumes:
+  my-db:      
+    
