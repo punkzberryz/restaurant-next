@@ -24,8 +24,14 @@ export const DeleteButton = ({ category }: { category: Category }) => {
       toast.error("โปรดลบรายการอาหารในหมวดหมู่นี้ก่อน");
       return;
     }
-    router.refresh();
-    router.push("/admin/category");
+    // router.refresh();
+    // router.push("/admin/category");
+    /*
+     We reload the page because we are using React-query which is storing cache.
+     Right now we have no way to clear the cache.
+     Hence we reload the page from client side
+    */
+    window.location.reload();
     toast.success("ลบหมวดหมู่อาหารสำเร็จ");
     setOpen(false);
   };
