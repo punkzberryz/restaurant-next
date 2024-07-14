@@ -15,32 +15,14 @@ interface ClientProps {
   initialData: { categories: Category[]; hasMore: boolean };
 }
 
-const getManyCategories = async ({
-  pageId,
-  limit,
-}: {
-  pageId: number;
-  limit: number;
-}) => {
-  const { categories, error } = await getManyCategoriesAction({
-    pageId,
-    limit,
-  });
-  if (error) {
-    throw new Error(error.message);
-  }
-  return {
-    categories,
-    hasMore: categories.length > 0,
-  };
-};
-
 export const Client = ({ limit, initialData }: ClientProps) => {
   const queryClient = useQueryClient();
   const [pageId, setPageId] = useState(1);
   const [pageLimit, setPageLimit] = useState(limit);
   const { data, refetch, isPlaceholderData } = useQuery({
-    queryKey: ["getManyCategoriesAction", pageId, pageLimit],
+    // We add initialData so that when we delete data in this table, it will clear query-cache.
+    // But what if the data is on second page??
+    queryKey: ["getManyCategoriesAction", pageId, pageLimit, initialData],
     queryFn: () => getManyCategories({ pageId, limit: pageLimit }),
     refetchOnMount: false,
     placeholderData: keepPreviousData,
@@ -64,4 +46,24 @@ export const Client = ({ limit, initialData }: ClientProps) => {
       <DataTable columns={categoryColumnDef} data={data.categories} />
     </div>
   );
+};
+
+const getManyCategories = async ({
+  pageId,
+  limit,
+}: {
+  pageId: number;
+  limit: number;
+}) => {
+  const { categories, error } = await getManyCategoriesAction({
+    pageId,
+    limit,
+  });
+  if (error) {
+    throw new Error(error.message);
+  }
+  return {
+    categories,
+    hasMore: categories.length > 0,
+  };
 };

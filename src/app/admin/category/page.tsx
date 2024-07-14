@@ -14,6 +14,10 @@ import { categoryColumnDef } from "./components/table/category-column-def";
 import { validateRequest } from "@/lib/auth";
 import { UnauthorizedError } from "@/lib/error";
 import { Client } from "./components/client";
+import { Skeleton } from "@/components/ui/skeleton";
+import Image from "next/image";
+import { cn } from "@/lib/utils";
+import { DataTableSkeleton } from "@/components/table/data-table-skeleton";
 
 const CategoryPage = () => {
   return (
@@ -27,7 +31,7 @@ const CategoryPage = () => {
       />
       <MaxWidthWrapper>
         <Card>
-          <CardContent className="p-6">
+          <CardContent className="flex flex-col space-y-8 p-6">
             <div className="flex items-center justify-between">
               <CardTitle>รายการหมวดหมู่อาหาร</CardTitle>
               <Link href="/admin/category/new" className={buttonVariants({})}>
@@ -36,7 +40,7 @@ const CategoryPage = () => {
               </Link>
             </div>
             {/* Table */}
-            <Suspense fallback={<div>Loading...</div>}>
+            <Suspense fallback={<DataTableSkeleton />}>
               <FetchCategories />
             </Suspense>
           </CardContent>
@@ -48,7 +52,7 @@ const CategoryPage = () => {
 
 const FetchCategories = async () => {
   noStore();
-  await delay(1000);
+  // await delay(1000);
   try {
     //validate user
     const { user } = await validateRequest();

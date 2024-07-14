@@ -21,7 +21,9 @@ export const SideNavbar = ({ className }: { className?: string }) => {
         className,
       )}
     >
-      <Logo />
+      <Link href="/admin">
+        <Logo />
+      </Link>
       <Separator />
       <NavLinks />
     </nav>
@@ -30,12 +32,12 @@ export const SideNavbar = ({ className }: { className?: string }) => {
 
 const Logo = () => {
   return (
-    <Link className="flex items-center space-x-1 py-1 pl-2" href="/admin">
+    <div className="flex items-center space-x-1 py-1 pl-2">
       <div className="rounded-full bg-background p-2">
         <Image src="/logo.svg" alt="Logo" height={25} width={25} priority />
       </div>
       <span className="text-lg">RMS</span>
-    </Link>
+    </div>
   );
 };
 const NavLinks = () => {

@@ -10,11 +10,16 @@ import { DeleteButton } from "./delete-button";
 
 export const categoryColumnDef: ColumnDef<Category>[] = [
   {
-    header: ({ column }) => <TableColumnHeader title="ลำดับ" column={column} />,
+    header: ({ column }) => (
+      <>
+        <TableColumnHeader title="ลำดับ" column={column} />
+      </>
+    ),
     accessorKey: "id",
     cell: ({ row }) => (
       <Link href={`/admin/category/${row.original.id}`}>{row.index + 1}</Link>
     ),
+    size: 40,
   },
   {
     header: "ชื่อหมวดหมู่",
@@ -25,11 +30,13 @@ export const categoryColumnDef: ColumnDef<Category>[] = [
     header: "แก้ไข",
     accessorKey: "edit",
     cell: ({ row }) => <EditButton categoryId={row.original.id} />,
+    size: 40,
   },
   {
     header: "ลบ",
     accessorKey: "delete",
     cell: ({ row }) => <DeleteButton category={row.original} />,
+    size: 40,
   },
 ];
 

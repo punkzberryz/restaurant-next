@@ -29,7 +29,7 @@ const CategoryByIdPage = ({
       />
       <MaxWidthWrapper className="flex flex-col">
         <Card className="mx-auto">
-          <CardContent className="p-6">
+          <CardContent className="flex flex-col space-y-8 p-6">
             {categoryId === "new" ? (
               <CategoryForm isNew initialData={null} title={title} />
             ) : (

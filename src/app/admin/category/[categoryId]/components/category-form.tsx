@@ -17,13 +17,6 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Trash } from "lucide-react";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import {
   createCategoryAction,
   deleteCategoryAction,
   editCategoryAction,
@@ -31,6 +24,7 @@ import {
 import toast from "react-hot-toast";
 import { LoadingBars } from "@/components/ui/loading-bars";
 import { DeleteConfirmModal } from "../../components/delete-confirm-modal";
+
 interface CategoryFormProps {
   initialData: Category | null;
   title: string;
@@ -102,10 +96,14 @@ export const CategoryForm = ({
         onDelete={onDelete}
       />
       {/* Title */}
-      <div className="flex items-center space-x-2">
+      <div className="flex items-center space-x-4">
         <h1 className="font-semibold md:text-3xl">{title}</h1>
         {isNew ? null : (
-          <Button size="sm" onClick={() => setOpenDeleteConfirm(true)}>
+          <Button
+            size="sm"
+            onClick={() => setOpenDeleteConfirm(true)}
+            variant="destructive"
+          >
             <Trash className="h-4 w-4" />
           </Button>
         )}
