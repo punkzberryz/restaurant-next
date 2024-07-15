@@ -17,7 +17,7 @@ export const categoryColumnDef: ColumnDef<Category>[] = [
     ),
     accessorKey: "id",
     cell: ({ row }) => (
-      <Link href={`/admin/category/${row.original.id}`}>{row.index + 1}</Link>
+      <Link href={`/admin/category/${row.original.id}`}>{row.original.id}</Link>
     ),
     size: 40,
   },
@@ -40,7 +40,7 @@ export const categoryColumnDef: ColumnDef<Category>[] = [
   },
 ];
 
-const EditButton = ({ categoryId }: { categoryId: string }) => {
+const EditButton = ({ categoryId }: { categoryId: number }) => {
   return (
     <Button className="-my-2 h-8 rounded-md px-2" asChild variant="edit">
       <Link href={`/admin/category/${categoryId}`}>

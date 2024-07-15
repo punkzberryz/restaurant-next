@@ -10,6 +10,9 @@ import { getManyCategoriesAction } from "./category-action";
 import { Category } from "@prisma/client";
 import { DataTable } from "@/components/table/data-table";
 import { categoryColumnDef } from "./table/category-column-def";
+import { TablePaginationButtons } from "@/components/table/table-pagination-buttons";
+import { TablePageLimit } from "@/components/table/table-page-limit";
+
 interface ClientProps {
   limit: number;
   initialData: { categories: Category[]; hasMore: boolean };
@@ -42,8 +45,17 @@ export const Client = ({ limit, initialData }: ClientProps) => {
     }
   }, [data, isPlaceholderData, pageId, queryClient, pageLimit]);
   return (
-    <div>
+    <div className="flex flex-col space-y-8">
       <DataTable columns={categoryColumnDef} data={data.categories} />
+      <div className="items-cente mt-5 flex justify-end space-x-6">
+        <TablePageLimit setPageLimit={setPageLimit} />
+        <TablePaginationButtons
+          hasMore={data.hasMore}
+          pageId={pageId}
+          setPageId={setPageId}
+          isPlaceholderData={isPlaceholderData}
+        />
+      </div>
     </div>
   );
 };
@@ -64,6 +76,7 @@ const getManyCategories = async ({
   }
   return {
     categories,
-    hasMore: categories.length > 0,
+    // hasMore: categories.length > 0,
+    hasMore: categories.length === limit,
   };
 };

@@ -22,7 +22,7 @@ export const createCategoryAction = async ({
     }
     //validate user
     const { user } = await validateRequest();
-    if (!user) {
+    if (!user || user.role !== "ADMIN") {
       throw new UnauthorizedError();
     }
     const category = await db.category.create({
@@ -41,7 +41,7 @@ export const editCategoryAction = async ({
   categoryId,
 }: {
   data: CategorySchema;
-  categoryId: string;
+  categoryId: number;
 }) => {
   try {
     //validate data
@@ -71,7 +71,7 @@ export const editCategoryAction = async ({
 export const deleteCategoryAction = async ({
   categoryId,
 }: {
-  categoryId: string;
+  categoryId: number;
 }) => {
   try {
     //validate body
@@ -80,7 +80,7 @@ export const deleteCategoryAction = async ({
     }
     //validate user
     const { user } = await validateRequest();
-    if (!user) {
+    if (!user || user.role !== "ADMIN") {
       throw new UnauthorizedError();
     }
     //delete category
@@ -110,7 +110,7 @@ export const getManyCategoriesAction = async ({
     }
     //validate user
     const { user } = await validateRequest();
-    if (!user) {
+    if (!user || user.role !== "ADMIN") {
       throw new UnauthorizedError();
     }
     const categories = await db.category.findMany({

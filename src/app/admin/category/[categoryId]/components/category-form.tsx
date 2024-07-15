@@ -40,7 +40,7 @@ export const CategoryForm = ({
   const [loading, setLoading] = useState(false);
   const onSubmit = async (data: CategorySchema) => {
     setLoading(true);
-    let categoryId: string;
+    let categoryId: number;
     if (isNew || !initialData) {
       const { error, category } = await createCategoryAction({ data });
       setLoading(false);
@@ -133,7 +133,7 @@ export const CategoryForm = ({
           </Button>
           <Button
             variant="secondary"
-            onClick={() => router.push("/admin/category")}
+            onClick={router.back}
             disabled={loading}
             type="button"
           >

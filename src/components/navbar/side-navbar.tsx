@@ -4,6 +4,7 @@ import {
   HomeIcon,
   LucideIcon,
   PaintRoller,
+  Salad,
   Users,
 } from "lucide-react";
 import { Separator } from "../ui/separator";
@@ -91,6 +92,11 @@ const links: {
     href: "/admin/category",
     title: "จัดการหมวดหมู่อาหาร",
     icon: CookingPot,
+  },
+  {
+    href: "/admin/food",
+    title: "จัดการอาหาร",
+    icon: Salad,
   },
   {
     href: "/admin/restaurant",

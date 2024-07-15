@@ -1,16 +1,13 @@
 import { unstable_noStore as noStore } from "next/cache";
 import { MaxWidthWrapper } from "@/components/max-width-wrapper";
 import { PageHeader } from "@/components/navbar/page-header";
-import { DataTable } from "@/components/table/data-table";
 import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { db } from "@/lib/db";
-import { delay } from "@/lib/delay";
 import { Plus } from "lucide-react";
 import { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
-import { categoryColumnDef } from "./components/table/category-column-def";
 import { validateRequest } from "@/lib/auth";
 import {
   catchErrorTypeChecker,
@@ -18,9 +15,6 @@ import {
   UnauthorizedError,
 } from "@/lib/error";
 import { Client } from "./components/client";
-import { Skeleton } from "@/components/ui/skeleton";
-import Image from "next/image";
-import { cn } from "@/lib/utils";
 import { DataTableSkeleton } from "@/components/table/data-table-skeleton";
 
 const CategoryPage = () => {

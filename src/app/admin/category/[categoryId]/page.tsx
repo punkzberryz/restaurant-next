@@ -8,12 +8,11 @@ import { Card, CardContent } from "@/components/ui/card";
 import { BadRequestError } from "@/lib/error";
 import { CategorySkeleton } from "./components/category-skeleton";
 
-const CategoryByIdPage = ({
-  params: { categoryId },
-}: {
+interface CategoryByIdPageProps {
   params: { categoryId: string };
-}) => {
-  const title = `${categoryId === "new" ? "สร้าง" : "แก้ไข"}หมวดหมู่อาหาร | Category`;
+}
+const CategoryByIdPage = ({ params }: CategoryByIdPageProps) => {
+  const title = `${params.categoryId === "new" ? "สร้าง" : "แก้ไข"}หมวดหมู่อาหาร | Category`;
   return (
     <>
       <PageHeader
@@ -23,20 +22,23 @@ const CategoryByIdPage = ({
           { href: "/admin/category", title: "Category" },
           {
             href: "#",
-            title: `${categoryId === "new" ? "New" : "Edit"} Category`,
+            title: `${params.categoryId === "new" ? "New" : "Edit"} Category`,
           },
         ]}
       />
       <MaxWidthWrapper className="flex flex-col">
         <Card className="mx-auto">
           <CardContent className="flex flex-col space-y-8 p-6">
-            {categoryId === "new" ? (
+            {params.categoryId === "new" ? (
               <CategoryForm isNew initialData={null} title={title} />
             ) : (
               <Suspense
                 fallback={<CategorySkeleton title={title} isNew={false} />}
               >
-                <FetchCategoryById id={categoryId} title={title} />
+                <FetchCategoryById
+                  categoryId={params.categoryId}
+                  title={title}
+                />
               </Suspense>
             )}
           </CardContent>
@@ -47,12 +49,14 @@ const CategoryByIdPage = ({
 };
 
 const FetchCategoryById = async ({
-  id,
+  categoryId,
   title,
 }: {
-  id: string;
+  categoryId: string;
   title: string;
 }) => {
+  const id = parseInt(categoryId);
+  if (isNaN(id)) throw new BadRequestError();
   try {
     const category = await db.category.findUnique({ where: { id } });
     if (!category) throw new BadRequestError();
