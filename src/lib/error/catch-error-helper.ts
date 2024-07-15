@@ -4,6 +4,36 @@ import {
   UnauthorizedError,
 } from "./model";
 
+export enum ErrorType {
+  Unauthorized = "UnauthorizedError",
+  BadRequest = "BadRequestError",
+  Internal = "InternalServerError",
+  Error = "Error",
+  Unknown = "Unknown",
+}
+
+export const catchErrorTypeChecker = (
+  err: unknown,
+): { type: ErrorType; message: string } => {
+  if (err instanceof UnauthorizedError) {
+    return { type: ErrorType.Unauthorized, message: err.message };
+  }
+  if (err instanceof BadRequestError) {
+    return { type: ErrorType.BadRequest, message: err.message };
+  }
+  if (err instanceof InternalServerError) {
+    return { type: ErrorType.Internal, message: err.message };
+  }
+  if (err instanceof Error) {
+    return { type: ErrorType.Error, message: err.message };
+  }
+  if (typeof err === "string") {
+    return { type: ErrorType.Error, message: err };
+  }
+  //unknown error
+  return { type: ErrorType.Unknown, message: "Unknown error" };
+};
+
 export const catchErrorHelper = (functionaName: string, err: unknown) => {
   if (err instanceof UnauthorizedError) {
     console.error(`[UNAUTH_ERROR ${functionaName}] ${err.message}`);

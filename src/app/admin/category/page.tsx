@@ -12,7 +12,11 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { categoryColumnDef } from "./components/table/category-column-def";
 import { validateRequest } from "@/lib/auth";
-import { UnauthorizedError } from "@/lib/error";
+import {
+  catchErrorTypeChecker,
+  ErrorType,
+  UnauthorizedError,
+} from "@/lib/error";
 import { Client } from "./components/client";
 import { Skeleton } from "@/components/ui/skeleton";
 import Image from "next/image";
@@ -57,7 +61,7 @@ const FetchCategories = async () => {
     //validate user
     const { user } = await validateRequest();
     if (!user) {
-      throw new UnauthorizedError();
+      throw new UnauthorizedError("ไม่พบผู้ใช้");
     }
     const categories = await db.category.findMany({
       take: CATEGORIES_LIMIT,
@@ -70,6 +74,10 @@ const FetchCategories = async () => {
       />
     );
   } catch (err) {
+    const error = catchErrorTypeChecker(err);
+    if (error.type === ErrorType.Unauthorized) {
+      throw new UnauthorizedError(error.message);
+    }
     throw new Error("เกิดข้อผิดพลาดในการดึงข้อมูลหมวดหมู่อาหาร");
   }
 };
