@@ -40,7 +40,7 @@ model Session {
 }
 
 model Category {
-  id    String @id @default(cuid())
+  id    Int    @id @default(autoincrement())
   name  String
   foods Food[] @relation("CategoryToFood")
 }
@@ -52,12 +52,12 @@ enum FoodUnit {
 }
 
 model Food {
-  id          String   @id @default(cuid())
+  id          Int      @id @default(autoincrement())
   name        String
   description String?
   unit        FoodUnit
   price       Float
-  categoryId  String
+  categoryId  Int
   images      Image[]
   category    Category @relation("CategoryToFood", fields: [categoryId], references: [id])
   createdAt   DateTime @default(now())
@@ -68,7 +68,7 @@ model Food {
 
 model Image {
   id        String   @id @default(uuid())
-  foodId    String
+  foodId    Int
   url       String
   food      Food     @relation(fields: [foodId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
