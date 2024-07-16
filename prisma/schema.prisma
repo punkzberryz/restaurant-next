@@ -49,6 +49,9 @@ enum FoodUnit {
   KG
   PLATE
   CUP
+  BOWL
+  BOTTLE
+  PIECE
 }
 
 model Food {

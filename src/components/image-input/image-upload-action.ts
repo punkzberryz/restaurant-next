@@ -17,9 +17,12 @@ export const getCloudinaryUploadSignatureAction = async ({
 }) => {
   try {
     //validate data
-    if (!folder || !publicId) {
+    if (!folder) {
       throw new BadRequestError();
     }
+
+    const folderName =
+      process.env.NODE_ENV === "development" ? `dev-${folder}` : folder;
     //validate user
     const { user } = await validateRequest();
     if (!user) {
@@ -39,7 +42,7 @@ export const getCloudinaryUploadSignatureAction = async ({
     const signature = cloudinary.utils.api_sign_request(
       {
         timestamp,
-        folder,
+        folder: folderName,
         public_id: publicId,
       },
       apiSecret,
@@ -48,7 +51,7 @@ export const getCloudinaryUploadSignatureAction = async ({
       signature,
       timestamp,
       apiKey,
-      folder,
+      folder: folderName,
       publicId,
     };
     return { data };

@@ -2,7 +2,10 @@ import { MaxWidthWrapper } from "@/components/max-width-wrapper";
 import { PageHeader } from "@/components/navbar/page-header";
 import { Card, CardContent } from "@/components/ui/card";
 import { Metadata } from "next";
-import { FoodForm } from "./components/food-form";
+import { FetchData } from "./components/fetch-data";
+import { Suspense } from "react";
+import { FoodSkeleton } from "./components/food-form-skeleton";
+
 interface FoodByIdPageProps {
   params: {
     foodId: string;
@@ -10,6 +13,7 @@ interface FoodByIdPageProps {
 }
 const FoodByIadPage = ({ params }: FoodByIdPageProps) => {
   const title = `${params.foodId === "new" ? "สร้าง" : "แก้ไข"}อาหาร | Food`;
+  const isNew = params.foodId === "new";
   return (
     <>
       <PageHeader
@@ -19,14 +23,16 @@ const FoodByIadPage = ({ params }: FoodByIdPageProps) => {
           { href: "/admin/food", title: "Food" },
           {
             href: "#",
-            title: `${params.foodId === "new" ? "New" : "Edit"} Food`,
+            title: `${isNew ? "New" : "Edit"} Food`,
           },
         ]}
       />
-      <MaxWidthWrapper className="flex flex-col">
-        <Card>
+      <MaxWidthWrapper>
+        <Card className="mx-auto max-w-4xl">
           <CardContent className="flex flex-col space-y-8 p-6">
-            <FoodForm isNew title={title} initialData={null} />
+            <Suspense fallback={<FoodSkeleton isNew={isNew} title={title} />}>
+              <FetchData foodId={params.foodId} isNew={isNew} title={title} />
+            </Suspense>
           </CardContent>
         </Card>
       </MaxWidthWrapper>

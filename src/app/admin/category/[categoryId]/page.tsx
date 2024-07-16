@@ -26,8 +26,8 @@ const CategoryByIdPage = ({ params }: CategoryByIdPageProps) => {
           },
         ]}
       />
-      <MaxWidthWrapper className="flex flex-col">
-        <Card className="mx-auto">
+      <MaxWidthWrapper>
+        <Card className="mx-auto max-w-4xl">
           <CardContent className="flex flex-col space-y-8 p-6">
             {params.categoryId === "new" ? (
               <CategoryForm isNew initialData={null} title={title} />

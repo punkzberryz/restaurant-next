@@ -1,5 +1,3 @@
-"use server";
-
 import { validateRequest } from "@/lib/auth";
 import { Suspense } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";

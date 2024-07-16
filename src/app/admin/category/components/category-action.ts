@@ -32,6 +32,7 @@ export const createCategoryAction = async ({
     return { category };
   } catch (err) {
     const error = catchErrorForServerActionHelper(err);
+    console.log({ error });
     return { error };
   }
 };

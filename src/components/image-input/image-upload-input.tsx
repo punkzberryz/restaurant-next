@@ -47,6 +47,7 @@ export const ImageUploadInput = ({
         type: "ADD_FILES_BEFORE_UPLOAD",
         payload: { files: validFiles },
       });
+      // upload files and update state
       validFiles.forEach((file, index) => {
         uploadImage(file, folder).then((result) => {
           //update file state after upload
@@ -88,7 +89,7 @@ export const ImageUploadInput = ({
   return (
     <div
       onDragEnter={handleDrag}
-      className="flex h-full w-full items-center lg:w-2/3"
+      className="flex h-full w-full max-w-4xl items-center"
     >
       <label
         htmlFor="dropzone-file"

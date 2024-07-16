@@ -112,7 +112,7 @@ export const CategoryForm = ({
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit, onSubmitError)}
-          className="flex max-w-lg flex-col space-y-6"
+          className="flex flex-col space-y-6"
         >
           <FormField
             control={form.control}
@@ -127,18 +127,20 @@ export const CategoryForm = ({
               </FormItem>
             )}
           />
-
-          <Button type="submit" disabled={loading}>
-            {loading ? <LoadingBars /> : isNew ? "สร้าง" : "บันทึก"}
-          </Button>
-          <Button
-            variant="secondary"
-            onClick={router.back}
-            disabled={loading}
-            type="button"
-          >
-            ยกเลิก
-          </Button>
+          <div className="flex flex-col gap-4 md:flex-row-reverse">
+            <Button className="min-w-[150px]" type="submit" disabled={loading}>
+              {loading ? <LoadingBars /> : isNew ? "สร้าง" : "บันทึก"}
+            </Button>
+            <Button
+              className="min-w-[150px]"
+              variant="secondary"
+              onClick={() => router.push("/admin/category")}
+              disabled={loading}
+              type="button"
+            >
+              ยกเลิก
+            </Button>
+          </div>
         </form>
       </Form>
     </>
