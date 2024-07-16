@@ -8,6 +8,7 @@ import {
 } from "@/lib/error";
 import { catchErrorForServerActionHelper } from "@/lib/error/catch-error-action-helper";
 import { v2 as cloudinary } from "cloudinary";
+import { cloudinaryFolderName } from "./folder-name";
 export const getCloudinaryUploadSignatureAction = async ({
   folder,
   publicId,
@@ -60,3 +61,79 @@ export const getCloudinaryUploadSignatureAction = async ({
     return { error };
   }
 };
+
+export const deleteImageCloudinaryAction = async ({
+  url,
+  folder,
+}: {
+  url: string;
+  folder: cloudinaryFolderName;
+}) => {
+  try {
+    //validate request
+    if (!url || !folder) {
+      throw new BadRequestError();
+    }
+    const publicId = getCloudinaryPublicId({ url, folder });
+    if (!publicId) {
+      //corrupted image url
+      return {};
+    }
+    //validate user
+    const { user } = await validateRequest();
+    if (!user) {
+      throw new UnauthorizedError();
+    }
+    const resp = await deleteImageCloudinary(publicId);
+    if (resp.result !== "ok") {
+      if (resp.result === "not found") {
+        throw new BadRequestError("Image not found");
+      }
+      throw new InternalServerError("Failed to delete image");
+    }
+
+    return {};
+  } catch (err) {
+    const error = catchErrorForServerActionHelper(err);
+
+    return { error };
+  }
+};
+
+const getCloudinaryPublicId = ({
+  url,
+  folder,
+}: {
+  url: string;
+  folder: cloudinaryFolderName;
+}) => {
+  const folderProd =
+    process.env.NODE_ENV === "development" ? `dev-${folder}` : folder;
+
+  const urlArray = url.split(folderProd + "/");
+  if (urlArray.length <= 1) {
+    return null;
+  }
+  const [_, imgNameWithJpeg] = urlArray;
+  const nameAndJpeg = imgNameWithJpeg.split(".");
+  if (nameAndJpeg.length <= 1) {
+    return null;
+  }
+  //what if image name is xxasd.adsasc.asdasd.jpg ?? we would get [xxxasd, adsasc, asdasd, jpg]
+  const imgName = nameAndJpeg.slice(0, nameAndJpeg.length - 1).join(".");
+  return folderProd + "/" + imgName;
+};
+
+const deleteImageCloudinary = (publicId: string) =>
+  new Promise<{ result?: string }>((resolve, reject) => {
+    cloudinary.config({
+      cloud_name: config.cloudinary.cloudName,
+      api_key: config.cloudinary.apiKey,
+      api_secret: config.cloudinary.apiSecret,
+      secure: true,
+    });
+    cloudinary.uploader
+      .destroy(publicId)
+      .then((res) => resolve(res))
+      .catch((err) => reject(err?.message));
+  });

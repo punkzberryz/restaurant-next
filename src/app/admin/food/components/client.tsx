@@ -1,6 +1,5 @@
 "use client";
 
-import { Food } from "@prisma/client";
 import {
   keepPreviousData,
   useQuery,
@@ -13,12 +12,16 @@ import { foodColumnDef } from "./table/food-column-def";
 import { TablePageLimit } from "@/components/table/table-page-limit";
 import { TablePaginationButtons } from "@/components/table/table-pagination-buttons";
 import { FoodWithImagesAndCategory } from "./food-schema";
+import { useImageToBeDeletedStore } from "@/components/image-input/use-image-to-be-deleted-store";
+import { deleteImageCloudinaryAction } from "@/components/image-input/image-upload-action";
+import { cloudinaryFolderName } from "@/components/image-input/folder-name";
 
 interface ClientProps {
   limit: number;
   initialData: { foods: FoodWithImagesAndCategory[]; hasMore: boolean };
 }
 export const Client = ({ initialData, limit }: ClientProps) => {
+  const { removeUrl, urls } = useImageToBeDeletedStore();
   const queryClient = useQueryClient();
   const [pageId, setPageId] = useState(1);
   const [pageLimit, setPageLimit] = useState(limit);
@@ -43,6 +46,22 @@ export const Client = ({ initialData, limit }: ClientProps) => {
       });
     }
   }, [data, isPlaceholderData, pageId, queryClient, pageLimit]);
+  //delte images from upload store
+  useEffect(() => {
+    if (urls.length === 0) return;
+    urls.forEach((url) =>
+      deleteImageCloudinaryAction({
+        url,
+        folder: cloudinaryFolderName.foods,
+      }).then(({ error }) => {
+        if (error) {
+          console.error(error.message);
+          return;
+        }
+        removeUrl(url);
+      }),
+    );
+  }, [urls, removeUrl]);
 
   return (
     <div className="flex flex-col space-y-8">
