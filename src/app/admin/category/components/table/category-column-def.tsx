@@ -10,11 +10,8 @@ import { DeleteButton } from "./delete-button";
 
 export const categoryColumnDef: ColumnDef<Category>[] = [
   {
-    header: ({ column }) => (
-      <>
-        <TableColumnHeader title="ลำดับ" column={column} />
-      </>
-    ),
+    header: ({ column }) => <TableColumnHeader title="ลำดับ" column={column} />,
+
     accessorKey: "id",
     cell: ({ row }) => (
       <Link href={`/admin/category/${row.original.id}`}>{row.original.id}</Link>

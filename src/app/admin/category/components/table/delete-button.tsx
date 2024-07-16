@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { DeleteConfirmModal } from "../delete-confirm-modal";
+import { DeleteConfirmModal } from "../../../../../components/delete-confirm-modal";
 import { Button } from "@/components/ui/button";
 import { Trash } from "lucide-react";
 import { Category } from "@prisma/client";

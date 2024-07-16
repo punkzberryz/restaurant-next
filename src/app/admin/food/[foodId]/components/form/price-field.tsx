@@ -1,6 +1,6 @@
 "use client";
 import { UseFormReturn } from "react-hook-form";
-import { FoodSchema } from "../food-schema";
+import { FoodSchema } from "../../../components/food-schema";
 import {
   FormControl,
   FormField,

@@ -7,7 +7,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { UseFormReturn } from "react-hook-form";
-import { FoodSchema, unitOptions } from "../food-schema";
+import { FoodSchema, unitOptions } from "../../../components/food-schema";
 import {
   Select,
   SelectContent,

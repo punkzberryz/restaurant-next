@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { FoodUnit } from "@prisma/client";
+import { Category, Food, FoodUnit, Image } from "@prisma/client";
 
 export const unitOptions: { value: FoodUnit; label: string }[] = [
   {
@@ -28,7 +28,7 @@ export const unitOptions: { value: FoodUnit; label: string }[] = [
   },
 ] as const;
 
-// const unitLabels = new Map(unitOptions.map((u) => [u.value, u.label]));
+export const unitLabels = new Map(unitOptions.map((u) => [u.value, u.label]));
 type UnitOption = (typeof unitOptions)[number]["value"];
 const unitOptionSchema: [UnitOption, ...UnitOption[]] = [
   unitOptions[0].value,
@@ -44,3 +44,7 @@ export const foodSchema = z.object({
   images: z.object({ url: z.string() }).array(),
 });
 export type FoodSchema = z.infer<typeof foodSchema>;
+
+export type FoodWithImagesAndCategory = Food & { images: Image[] } & {
+  category: Category;
+};

@@ -2,10 +2,9 @@
 
 import { Category, Food, Image } from "@prisma/client";
 import { useEffect, useState } from "react";
-import { foodSchema, FoodSchema } from "../food-schema";
+import { foodSchema, FoodSchema } from "../../../components/food-schema";
 import { FieldErrors, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { DeleteConfirmModal } from "@/app/admin/category/components/delete-confirm-modal";
 import { Button } from "@/components/ui/button";
 import { Trash } from "lucide-react";
 import { Form } from "@/components/ui/form";
@@ -18,6 +17,7 @@ import { PriceField } from "./price-field";
 import { UnitField } from "./unit-field";
 import toast from "react-hot-toast";
 import { useFoodForm } from "./use-food-form";
+import { DeleteConfirmModal } from "@/components/delete-confirm-modal";
 
 interface FoodFormProps {
   initialData: (Food & { images: Image[] }) | null;

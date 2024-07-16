@@ -2,16 +2,16 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { FoodSchema } from "../food-schema";
+import { FoodSchema } from "../../../components/food-schema";
 import toast from "react-hot-toast";
 import { Food, Image } from "@prisma/client";
+import { useImageToBeDeletedStore } from "@/components/image-input/use-image-to-be-deleted-store";
+import { ImageState } from "@/components/image-input/image-input-type";
 import {
   createFoodAction,
   deleteFoodAction,
   editFoodAction,
-} from "../food-action";
-import { useImageToBeDeletedStore } from "@/components/image-input/use-image-to-be-deleted-store";
-import { ImageState } from "@/components/image-input/image-input-type";
+} from "../../../components/food-action";
 
 export function useFoodForm() {
   const router = useRouter();

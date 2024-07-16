@@ -1,9 +1,9 @@
 "use server";
 import { BadRequestError, UnauthorizedError } from "@/lib/error";
-import { foodSchema, FoodSchema } from "./food-schema";
 import { validateRequest } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { catchErrorForServerActionHelper } from "@/lib/error/catch-error-action-helper";
+import { foodSchema, FoodSchema } from "./food-schema";
 
 export const createFoodAction = async ({ data }: { data: FoodSchema }) => {
   try {
@@ -108,6 +108,45 @@ export const deleteFoodAction = async ({ id }: { id: number }) => {
       },
     });
     return {};
+  } catch (err) {
+    const error = catchErrorForServerActionHelper(err);
+    return { error };
+  }
+};
+
+export const getManyFoodsAction = async ({
+  pageId,
+  limit,
+}: {
+  limit: number;
+  pageId: number;
+}) => {
+  try {
+    //validate body
+    if (!pageId || !limit) {
+      throw new BadRequestError();
+    }
+    //validate user
+    const { user } = await validateRequest();
+    if (!user || user.role !== "ADMIN") {
+      throw new UnauthorizedError();
+    }
+    const foods = await db.food.findMany({
+      take: limit,
+      skip: (pageId - 1) * limit,
+      orderBy: {
+        id: "desc",
+      },
+      include: {
+        images: {
+          take: 1,
+        },
+        category: true,
+      },
+    });
+    return {
+      foods,
+    };
   } catch (err) {
     const error = catchErrorForServerActionHelper(err);
     return { error };

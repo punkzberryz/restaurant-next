@@ -23,7 +23,7 @@ import {
 } from "../../components/category-action";
 import toast from "react-hot-toast";
 import { LoadingBars } from "@/components/ui/loading-bars";
-import { DeleteConfirmModal } from "../../components/delete-confirm-modal";
+import { DeleteConfirmModal } from "../../../../../components/delete-confirm-modal";
 
 interface CategoryFormProps {
   initialData: Category | null;
