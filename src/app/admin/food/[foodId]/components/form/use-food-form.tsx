@@ -1,6 +1,5 @@
 "use client";
 
-import { useImageUploadReducer } from "@/components/image-input/use-image-upload-reducer";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { FoodSchema } from "../food-schema";

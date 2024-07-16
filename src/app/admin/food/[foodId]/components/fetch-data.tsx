@@ -1,9 +1,7 @@
 import { validateRequest } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { BadRequestError, UnauthorizedError } from "@/lib/error";
-import { Category, Food } from "@prisma/client";
 import { FoodForm } from "./form/food-form";
-import { delay } from "@/lib/delay";
 
 interface FetchDataProps {
   foodId: string;
