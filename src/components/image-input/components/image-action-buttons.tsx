@@ -1,20 +1,20 @@
 "use client";
 import {
   DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
-import { Button } from "../ui/button";
-import { ImageInputAction } from "./image-input-type";
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
+import { MultipleImagesInputAction } from "./image-input-type";
 import { MoreHorizontal, ArrowUp, ArrowDown, Trash } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export const ImageActionButtons = ({
   imageDispatch,
   index,
 }: {
-  imageDispatch: React.Dispatch<ImageInputAction>;
+  imageDispatch: React.Dispatch<MultipleImagesInputAction>;
   index: number;
 }) => {
   return (

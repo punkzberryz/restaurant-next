@@ -5,13 +5,15 @@ import { useState } from "react";
 import { FoodSchema } from "../../../components/food-schema";
 import toast from "react-hot-toast";
 import { Food, Image } from "@prisma/client";
-import { useImageToBeDeletedStore } from "@/components/image-input/use-image-to-be-deleted-store";
-import { ImageState } from "@/components/image-input/image-input-type";
 import {
   createFoodAction,
   deleteFoodAction,
   editFoodAction,
 } from "../../../components/food-action";
+import {
+  MultipleImagesState,
+  useImageToBeDeletedStore,
+} from "@/components/image-input";
 
 export function useFoodForm() {
   const router = useRouter();
@@ -22,7 +24,7 @@ export function useFoodForm() {
   const onSubmit = async (
     data: FoodSchema,
     initialData: (Food & { images: Image[] }) | null,
-    imageFiles: ImageState,
+    imageFiles: MultipleImagesState,
   ) => {
     //check price
     setLoading(true);

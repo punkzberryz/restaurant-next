@@ -1,21 +1,22 @@
 "use client";
-import { cloudinaryFolderName } from "@/components/image-input/folder-name";
+
 import {
-  ImageInputAction,
-  ImageState,
-} from "@/components/image-input/image-input-type";
-import { ImageUploadInput } from "@/components/image-input/image-upload-input";
+  cloudinaryFolderName,
+  MultipleImagesInputAction,
+  MultipleImagesState,
+} from "@/components/image-input";
+import { MultipleImagesUploadInput } from "@/components/image-input/multiple-images-upload-input";
 import { Label } from "@/components/ui/label";
 
 interface ImageFieldProps {
-  imageState: ImageState;
-  imageDispatch: React.Dispatch<ImageInputAction>;
+  imageState: MultipleImagesState;
+  imageDispatch: React.Dispatch<MultipleImagesInputAction>;
 }
 export const ImageField = ({ imageDispatch, imageState }: ImageFieldProps) => {
   return (
     <div className="flex flex-col space-y-2">
       <Label>Images</Label>
-      <ImageUploadInput
+      <MultipleImagesUploadInput
         imageDispatch={imageDispatch}
         imageState={imageState}
         folder={cloudinaryFolderName.foods}

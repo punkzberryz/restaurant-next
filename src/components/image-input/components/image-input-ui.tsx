@@ -1,21 +1,101 @@
 "use client";
 
 import { Loader2, PlusIcon, UploadCloud, XCircleIcon } from "lucide-react";
-import { ImageInputAction, FileWithUrl, ImageState } from "./image-input-type";
+import {
+  MultipleImagesInputAction,
+  FileWithUrl,
+  MultipleImagesState,
+} from "./image-input-type";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { ImageActionButtons } from "./image-action-buttons";
 
-export const ImageInput = ({
+export const SingleImageInput = ({
+  imageState: input,
   handleDrag,
   handleChange,
   handleDrop,
   maxFileSize,
+  id,
+}: {
+  imageState: FileWithUrl | null;
+  handleDrag: (e: React.DragEvent<HTMLFormElement | HTMLDivElement>) => void;
+  handleDrop: (e: React.DragEvent<HTMLDivElement>) => void;
+  handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  maxFileSize: number;
+  id: string;
+}) => {
+  return (
+    <>
+      <div
+        className="flex h-full w-full cursor-pointer flex-col items-center justify-center p-10"
+        onDragEnter={handleDrag}
+        onDragLeave={handleDrag}
+        onDragOver={handleDrag}
+        onDrop={handleDrop}
+      >
+        <input
+          onChange={handleChange}
+          accept="image/jpeg, image/jpg, image/png, image/webp"
+          id={id}
+          type="file"
+          className="hidden"
+        />
+        {input ? (
+          <div className="relative flex h-96 w-96 cursor-pointer">
+            {input.isLoading && (
+              <div className="absolute z-10 flex h-full w-full flex-col items-center justify-center">
+                <UploadCloud className="h-10 w-10 animate-bounce text-black" />
+                <p className="text-lg font-semibold">กำลังอัพโหลด...</p>
+              </div>
+            )}
+            {input.isError ? (
+              <div className="absolute z-10 flex h-full w-full flex-col items-center justify-center">
+                <XCircleIcon className="h-10 w-10 text-red-500" />
+                <p className="text-lg font-semibold">
+                  เกิดข้อผิดพลาดในการอัพโหลด...
+                </p>
+              </div>
+            ) : (
+              <Image
+                style={{ objectFit: "contain" }}
+                src={input.getUrl}
+                fill
+                alt={input.name}
+                className={input.isLoading ? "opacity-40" : ""}
+              />
+            )}
+          </div>
+        ) : (
+          <>
+            <UploadCloud className="mb-3 h-10 w-10 text-gray-400 dark:text-gray-600" />
+            <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+              <span className="font-semibold">คลิกเพื่ออัพโหลดรูป</span>{" "}
+              หรือลากรูปมาวางในกล่อง
+            </p>
+            <p className="text-xs text-gray-500 dark:text-gray-400">
+              อัพโหลดได้สูงสุด 1 รูป ขนาดไม่เกิน{" "}
+              {(maxFileSize / 1000000).toFixed(0)}MB ต่อรูป
+            </p>
+          </>
+        )}
+      </div>
+    </>
+  );
+};
+
+export const MultipleImagesInput = ({
+  handleDrag,
+  handleChange,
+  handleDrop,
+  maxFileSize,
+  id,
 }: {
   handleDrag: (e: React.DragEvent<HTMLFormElement | HTMLDivElement>) => void;
   handleDrop: (e: React.DragEvent<HTMLDivElement>) => void;
   handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   maxFileSize: number;
+  id: string;
 }) => {
   return (
     <>
@@ -28,16 +108,20 @@ export const ImageInput = ({
       ></div>
       <UploadCloud className="mb-3 h-10 w-10 text-gray-400 dark:text-gray-600" />
       <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
-        <span className="font-semibold">Click to upload</span> or drag and drop
+        <span className="font-semibold">คลิกเพื่ออัพโหลดรูป</span>{" "}
+        หรือลากรูปมาวางในกล่อง
       </p>
+
       <p className="text-xs text-gray-500 dark:text-gray-400">
-        up to 5 images, {(maxFileSize / 1000000).toFixed(0)}MB per file
+        อัพโหลดได้สูงสุด 5 รูป ขนาดไม่เกิน {(maxFileSize / 1000000).toFixed(0)}
+        MB ต่อรูป
       </p>
+
       <input
         multiple
         onChange={handleChange}
-        accept="image/jpeg, image/jpg, image/png"
-        id="dropzone-file"
+        accept="image/jpeg, image/jpg, image/png, image/webp"
+        id={id}
         type="file"
         className="hidden"
       />
@@ -45,18 +129,18 @@ export const ImageInput = ({
   );
 };
 
-export const ImageInputWithImageFiles = ({
+export const MultipleImagesInputWithImageFiles = ({
   imageState: input,
   handleDrag,
   handleChange,
   handleDrop,
   imageDispatch,
 }: {
-  imageState: ImageState;
+  imageState: MultipleImagesState;
   handleDrag: (e: React.DragEvent<HTMLFormElement | HTMLDivElement>) => void;
   handleDrop: (e: React.DragEvent<HTMLDivElement>) => void;
   handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  imageDispatch: React.Dispatch<ImageInputAction>;
+  imageDispatch: React.Dispatch<MultipleImagesInputAction>;
 }) => {
   return (
     <div className="flex h-full w-full flex-col">
@@ -129,7 +213,7 @@ const ImageUploadDisplayItem = ({
   index,
 }: {
   file: FileWithUrl;
-  imageDispatch: React.Dispatch<ImageInputAction>;
+  imageDispatch: React.Dispatch<MultipleImagesInputAction>;
   index: number;
 }) => {
   return (

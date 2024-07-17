@@ -76,8 +76,10 @@ export const deleteImageCloudinaryAction = async ({
     }
     const publicId = getCloudinaryPublicId({ url, folder });
     if (!publicId) {
-      //corrupted image url
-      return {};
+      //corrupted image url, may be due to incorrect folder name
+      return {
+        invalidUrl: true,
+      };
     }
     //validate user
     const { user } = await validateRequest();

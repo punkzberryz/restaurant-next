@@ -10,14 +10,13 @@ import { Trash } from "lucide-react";
 import { Form } from "@/components/ui/form";
 import { LoadingBars } from "@/components/ui/loading-bars";
 import { ImageField } from "../image-field";
-import { useImageUploadReducer } from "@/components/image-input/use-image-upload-reducer";
 import { CategoryField } from "./category-field";
 import { NameField } from "./name-field";
 import { PriceField } from "./price-field";
 import { UnitField } from "./unit-field";
-import toast from "react-hot-toast";
 import { useFoodForm } from "./use-food-form";
 import { DeleteConfirmModal } from "@/components/delete-confirm-modal";
+import { useMultipleImagesUploadReducer } from "@/components/image-input";
 
 interface FoodFormProps {
   initialData: (Food & { images: Image[] }) | null;
@@ -32,7 +31,7 @@ export const FoodForm = ({
   isNew,
   categories,
 }: FoodFormProps) => {
-  const [imageFiles, imageDispatch] = useImageUploadReducer();
+  const [imageFiles, imageDispatch] = useMultipleImagesUploadReducer();
   const {
     loading,
     onDelete,

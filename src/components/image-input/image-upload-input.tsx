@@ -1,98 +1,97 @@
 "use client";
 
-import { useCallback, useState } from "react";
-import { cloudinaryFolderName } from "./folder-name";
-import { ImageInputAction, ImageState, namingFile } from "./image-input-type";
-import { useImageToBeDeletedStore } from "./use-image-to-be-deleted-store";
+import { useCallback } from "react";
 import toast from "react-hot-toast";
-import { getCloudinaryUploadSignatureAction } from "./image-upload-action";
-import { uploadImageCloudinary } from "./image-upload-query";
 import { cn } from "@/lib/utils";
-import { ImageInput, ImageInputWithImageFiles } from "./image-input-ui";
+import {
+  SingleImageInputAction,
+  SingleImageState,
+} from "./components/image-input-type";
+import { cloudinaryFolderName } from "./components/folder-name";
+import { useImageToBeDeletedStore } from "./components/use-image-to-be-deleted-store";
+import { SingleImageInput } from "./components/image-input-ui";
+import { getCloudinaryUploadSignatureAction } from "./components/image-upload-action";
+import { uploadImageCloudinary } from "./components/image-upload-query";
+import { useImageUploadHooks } from "./components/use-image-upload-hooks";
 
 interface ImageUploadInputProps {
-  imageState: ImageState;
-  imageDispatch: React.Dispatch<ImageInputAction>;
   folder: cloudinaryFolderName;
+  onUpload: (url: string) => void;
+  imageDispatch: React.Dispatch<SingleImageInputAction>;
+  imageState: SingleImageState | null;
+  id: string;
 }
 export const ImageUploadInput = ({
   folder,
+  onUpload,
+  imageState,
   imageDispatch,
-  imageState: input,
+  id,
 }: ImageUploadInputProps) => {
-  const [dragActive, setDragActive] = useState(false);
   const { addUrl } = useImageToBeDeletedStore();
 
-  const noInput = input.length === 0;
-  const handleDrag = (e: React.DragEvent<HTMLFormElement | HTMLDivElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (e.type === "dragenter" || e.type === "dragover") {
-      setDragActive(true);
-    } else if (e.type === "dragleave") {
-      setDragActive(false);
-    }
-  };
-  const handleUploadFiles = useCallback(
-    (files: FileList, stateLength: number) => {
-      const { validFiles, error: errorMessage } = validateAndReturnFiles(
-        files,
-        stateLength,
-      );
-      if (!validFiles) {
-        toast.error(errorMessage);
+  const handleUploadFile = useCallback(
+    (files: FileList) => {
+      // validate file type and size
+      const validFile = validateFileTypeAndSize(files[0]);
+      if (!validFile) {
+        toast.error(
+          "Invalid file type or size. Please upload only PNG or JPEG files and size within 5MB.",
+        );
         return;
       }
+
       imageDispatch({
-        type: "ADD_FILES_BEFORE_UPLOAD",
-        payload: { files: validFiles },
+        type: "ADD_FILE_BEFORE_UPLOAD",
+        payload: { file: files[0] },
       });
-      // upload files and update state
-      validFiles.forEach((file, index) => {
-        uploadImage(file, folder).then((result) => {
-          //update file state after upload
+      //upload file
+
+      uploadImage(files[0], folder).then((result) => {
+        if (result.url) {
+          addUrl(result.url);
+          onUpload(result.url);
           imageDispatch({
-            type: "UPADTE_FILE_STATE_AFTER_UPLOAD",
+            type: "UPDATE_FILE_STATE_AFTER_UPLOAD",
             payload: {
               file: {
-                getUrl: result.url ?? "",
-                name: namingFile(file.name, index),
-                isError: result.url === undefined,
+                getUrl: result.url,
+                name: files[0].name,
+                isError: false,
                 isLoading: false,
               },
             },
           });
-          if (result.url) {
-            addUrl(result.url);
-          }
+          return;
+        }
+        //error
+        imageDispatch({
+          type: "UPDATE_FILE_STATE_AFTER_UPLOAD",
+          payload: {
+            file: {
+              getUrl: "",
+              name: files[0].name,
+              isError: true,
+              isLoading: false,
+            },
+          },
         });
       });
     },
-    [folder, imageDispatch, addUrl],
+    [folder, addUrl, onUpload, imageDispatch],
   );
-  // triggers when file is selected with click
-  const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    e.preventDefault();
-    if (e.target.files && e.target.files[0]) {
-      handleUploadFiles(e.target.files, input.length);
-    }
-  };
-  // triggers when file is dropped
-  const handleDrop = async (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      handleUploadFiles(e.dataTransfer.files, input.length);
-      e.dataTransfer.clearData();
-    }
-  };
+
+  const { dragActive, handleChange, handleDrag, handleDrop } =
+    useImageUploadHooks(handleUploadFile);
+  const noInput = imageState === null;
+
   return (
     <div
       onDragEnter={handleDrag}
       className="flex h-full w-full max-w-4xl items-center"
     >
       <label
-        htmlFor="dropzone-file"
+        htmlFor={id}
         className={cn(
           "group relative flex aspect-video h-full w-full flex-col items-center justify-center rounded-lg border-2 border-dashed border-slate-300 transition dark:border-gray-600",
           { "dark:border-slate-400 dark:bg-slate-800": dragActive },
@@ -109,44 +108,27 @@ export const ImageUploadInput = ({
             },
           )}
         >
-          {noInput ? (
-            <ImageInput
-              maxFileSize={MAX_FILE_SIZE}
-              handleChange={handleChange}
-              handleDrag={handleDrag}
-              handleDrop={handleDrop}
-            />
-          ) : (
-            <ImageInputWithImageFiles
-              imageState={input}
-              handleChange={handleChange}
-              handleDrag={handleDrag}
-              handleDrop={handleDrop}
-              imageDispatch={imageDispatch}
-            />
-          )}
+          <SingleImageInput
+            id={id}
+            imageState={imageState}
+            handleChange={handleChange}
+            handleDrag={handleDrag}
+            handleDrop={handleDrop}
+            maxFileSize={MAX_FILE_SIZE}
+          />
         </div>
       </label>
     </div>
   );
 };
 
-function validateAndReturnFiles(files: FileList, stateLength: number) {
-  const fileArray = Array.from(files);
-  // validate file type and size
-  const validFiles = fileArray.filter((file) => validateFileTypeAndSize(file));
-  if (fileArray.length !== validFiles.length) {
-    return {
-      error:
-        "Invalid file type or size. Please upload only PNG or JPEG files and size within 5MB.",
-    };
-  }
-  if (stateLength + validFiles.length > 5) {
-    return { error: "You can only upload a maximum of 5 files at a time." };
-  }
-  return { validFiles };
+function validateFileTypeAndSize(file: File) {
+  let valid = ALLOWED_FILE_TYPES.includes(file.type);
+  valid = valid && file.size <= MAX_FILE_SIZE;
+  return valid;
 }
-
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+const ALLOWED_FILE_TYPES = ["image/png", "image/jpeg", "image/webp"];
 const uploadImage = async (
   file: File,
   folder: cloudinaryFolderName,
@@ -170,10 +152,3 @@ const uploadImage = async (
     return {};
   }
 };
-function validateFileTypeAndSize(file: File) {
-  let valid = ALLOWED_FILE_TYPES.includes(file.type);
-  valid = valid && file.size <= MAX_FILE_SIZE;
-  return valid;
-}
-const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
-const ALLOWED_FILE_TYPES = ["image/png", "image/jpeg", "image/webp"];

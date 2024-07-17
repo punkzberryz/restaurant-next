@@ -1,46 +1,47 @@
 import { MaxWidthWrapper } from "@/components/max-width-wrapper";
 import { PageHeader } from "@/components/navbar/page-header";
-import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { validateRequest } from "@/lib/auth";
 import { db } from "@/lib/db";
-import { delay } from "@/lib/delay";
 import {
   catchErrorTypeChecker,
   ErrorType,
   UnauthorizedError,
 } from "@/lib/error";
-import { Plus } from "lucide-react";
 import { Metadata } from "next";
 import { unstable_noStore as noStore } from "next/cache";
-import Link from "next/link";
-import { Client } from "./components/client";
 import { Suspense } from "react";
-import { DataTableSkeleton } from "@/components/table/data-table-skeleton";
+import { RestaurantForm } from "./components/restaurant-form";
+import { Skeleton } from "@/components/ui/skeleton";
+const RestaurantPage = () => {
+  noStore();
 
-const FoodPage = () => {
   return (
     <>
       <PageHeader
-        title="จัดการอาหาร | Food"
+        title="จัดการข้อมูลร้านอาหาร | Restaurant"
         links={[
           { href: "/admin", title: "Dashboard" },
-          { href: "#", title: "Food" },
+          { href: "#", title: "Restaurant" },
         ]}
       />
       <MaxWidthWrapper>
-        <Card>
+        <Card className="mx-auto max-w-4xl">
           <CardContent className="flex flex-col space-y-8 p-6">
             <div className="flex items-center justify-between">
-              <CardTitle>รายการอาหาร</CardTitle>
-              <Link href="/admin/food/new" className={buttonVariants({})}>
-                <Plus className="h-4 w-4 md:mr-2" />
-                <span className="hidden md:block">สร้างใหม่</span>
-              </Link>
+              <CardTitle>จัดการข้อมูลร้านอาหาร</CardTitle>
             </div>
             {/* Table */}
-            <Suspense fallback={<DataTableSkeleton />}>
-              <FetchFoods />
+            <Suspense
+              fallback={
+                <div className="flex flex-col space-y-2">
+                  <div className="flex items-center space-x-2"></div>
+                  <Skeleton className="h-20" />
+                  <Skeleton className="h-44" />
+                </div>
+              }
+            >
+              <FetchRestaurant />
             </Suspense>
           </CardContent>
         </Card>
@@ -49,7 +50,7 @@ const FoodPage = () => {
   );
 };
 
-const FetchFoods = async () => {
+const FetchRestaurant = async () => {
   noStore();
 
   try {
@@ -58,23 +59,10 @@ const FetchFoods = async () => {
     if (!user) {
       throw new UnauthorizedError("ไม่พบผู้ใช้");
     }
-    const foods = await db.food.findMany({
-      take: FOODS_LIMIT,
-      skip: (FOODS_PAGE_ID - 1) * FOODS_LIMIT,
-      include: {
-        images: {
-          take: 1,
-        },
-        category: true,
-      },
-    });
+    //fetch restaurant info
+    const restaurant = await db.restaurant.findFirst();
 
-    return (
-      <Client
-        initialData={{ foods, hasMore: foods.length === FOODS_LIMIT }}
-        limit={FOODS_LIMIT}
-      />
-    );
+    return <RestaurantForm restaurant={restaurant} />;
   } catch (err) {
     const error = catchErrorTypeChecker(err);
     if (error.type === ErrorType.Unauthorized) {
@@ -84,10 +72,8 @@ const FetchFoods = async () => {
   }
 };
 
-export default FoodPage;
-const FOODS_LIMIT = 100;
-const FOODS_PAGE_ID = 1;
+export default RestaurantPage;
 export const metadata: Metadata = {
-  title: "จัดการอาหาร | Food",
-  description: "จัดการอาหาร",
+  title: "จัดการข้อมูลร้านอาหาร | Restaurant",
+  description: "จัดการข้อมูลร้านอาหาร",
 };

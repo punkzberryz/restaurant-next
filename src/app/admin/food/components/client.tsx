@@ -12,9 +12,11 @@ import { foodColumnDef } from "./table/food-column-def";
 import { TablePageLimit } from "@/components/table/table-page-limit";
 import { TablePaginationButtons } from "@/components/table/table-pagination-buttons";
 import { FoodWithImagesAndCategory } from "./food-schema";
-import { useImageToBeDeletedStore } from "@/components/image-input/use-image-to-be-deleted-store";
-import { deleteImageCloudinaryAction } from "@/components/image-input/image-upload-action";
-import { cloudinaryFolderName } from "@/components/image-input/folder-name";
+import {
+  cloudinaryFolderName,
+  deleteImageCloudinaryAction,
+  useImageToBeDeletedStore,
+} from "@/components/image-input";
 
 interface ClientProps {
   limit: number;
@@ -53,9 +55,13 @@ export const Client = ({ initialData, limit }: ClientProps) => {
       deleteImageCloudinaryAction({
         url,
         folder: cloudinaryFolderName.foods,
-      }).then(({ error }) => {
+      }).then(({ error, invalidUrl }) => {
         if (error) {
           console.error(error.message);
+          return;
+        }
+        if (invalidUrl) {
+          console.error("Invalid url");
           return;
         }
         removeUrl(url);

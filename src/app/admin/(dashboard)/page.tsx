@@ -1,6 +1,7 @@
 import { GetMe } from "@/app/get-me";
 import { MaxWidthWrapper } from "@/components/max-width-wrapper";
 import { PageHeader } from "@/components/navbar/page-header";
+import { Client } from "./components/client";
 
 const DashboardPage = () => {
   return (
@@ -13,6 +14,7 @@ const DashboardPage = () => {
         <div>dashboard</div>
 
         <GetMe />
+        <Client />
       </MaxWidthWrapper>
     </>
   );
