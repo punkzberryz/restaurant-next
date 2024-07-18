@@ -30,7 +30,7 @@ export const unitOptions: { value: FoodUnit; label: string }[] = [
 
 export const unitLabels = new Map(unitOptions.map((u) => [u.value, u.label]));
 type UnitOption = (typeof unitOptions)[number]["value"];
-const unitOptionSchema: [UnitOption, ...UnitOption[]] = [
+export const unitOptionSchema: [UnitOption, ...UnitOption[]] = [
   unitOptions[0].value,
   ...unitOptions.slice(1).map((u) => u.value),
 ];
