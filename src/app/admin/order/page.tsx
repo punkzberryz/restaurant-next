@@ -13,6 +13,8 @@ import {
 import { db } from "@/lib/db";
 import { OrderForm } from "./components/order-form";
 import { Food } from "@prisma/client";
+import { Skeleton } from "@/components/ui/skeleton";
+import { DataTableSkeleton } from "@/components/table/data-table-skeleton";
 
 //For now it will be staff who creates Order for customer
 //So we will need to validate user before creating order
@@ -34,7 +36,8 @@ const OrderPage = () => {
         <Card className="mx-auto max-w-4xl">
           <CardContent className="flex flex-col space-y-8 p-6">
             <CardTitle>จัดการออเดอร์ลูกค้า</CardTitle>
-            <Suspense fallback={<div>Loading...</div>}>
+
+            <Suspense fallback={<OrderFormSkeleton />}>
               <FetchMenu />
             </Suspense>
           </CardContent>
@@ -44,8 +47,22 @@ const OrderPage = () => {
   );
 };
 
+const OrderFormSkeleton = () => {
+  return (
+    <div className="flex flex-col space-y-2">
+      <Skeleton className="font-semibold text-transparent md:text-3xl">
+        Order Form
+      </Skeleton>
+      <Skeleton className="h-44" />
+      <Skeleton className="h-44" />
+      <DataTableSkeleton />
+    </div>
+  );
+};
+
 const FetchMenu = async () => {
   noStore();
+
   try {
     //validate user
     const { user } = await validateRequest();

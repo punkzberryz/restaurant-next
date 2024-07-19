@@ -24,7 +24,7 @@ export const OrderStatusOptions: { value: OrderStatus; label: string }[] = [
 export const orderStatusLabels = new Map(
   OrderStatusOptions.map((u) => [u.value, u.label]),
 );
-export const orderStatusSchema: [OrderStatus, ...OrderStatus[]] = [
+const orderStatusSchema: [OrderStatus, ...OrderStatus[]] = [
   OrderStatusOptions[0].value,
   ...OrderStatusOptions.slice(1).map((u) => u.value),
 ];
