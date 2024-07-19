@@ -3,10 +3,13 @@ import { PageHeader } from "@/components/navbar/page-header";
 import { DataTableSkeleton } from "@/components/table/data-table-skeleton";
 import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
+import { db } from "@/lib/db";
 import { Plus } from "lucide-react";
 import { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
+import { Client } from "./components/client";
+import { Bill } from "./components/bill-schema";
 
 const BillPage = () => {
   return (
@@ -33,7 +36,7 @@ const BillPage = () => {
             </div>
             {/* Table */}
             <Suspense fallback={<DataTableSkeleton />}>
-              {/* <FetchFoods /> */}
+              <FetchOrders />
             </Suspense>
           </CardContent>
         </Card>
@@ -42,7 +45,26 @@ const BillPage = () => {
   );
 };
 
+const FetchOrders = async () => {
+  const orders = await db.order.findMany({
+    orderBy: {
+      createdAt: "desc",
+    },
+    take: ORDERS_LIMIT,
+    skip: (ORDERS_PAGE_ID - 1) * ORDERS_LIMIT,
+  });
+
+  return (
+    <Client
+      initialData={{ orders, hasMore: orders.length === ORDERS_LIMIT }}
+      limit={ORDERS_LIMIT}
+    />
+  );
+};
+
 export default BillPage;
+const ORDERS_LIMIT = 100;
+const ORDERS_PAGE_ID = 1;
 export const metadata: Metadata = {
   title: "จัดการรายการบิล | Bill",
   description: "จัดการบิล",

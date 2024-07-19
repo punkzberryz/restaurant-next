@@ -77,6 +77,7 @@ export const AddFoodField = ({ form, menu }: AddFoodFieldProps) => {
     form.setValue("foods", newFoods);
     const totalPrice = newFoods.reduce((acc, food) => acc + food.totalPrice, 0);
     form.setValue("totalPrice", totalPrice);
+    form.setValue("foodQuantity", newFoods.length);
     setQuantity("");
     setselectedFood(null);
   };

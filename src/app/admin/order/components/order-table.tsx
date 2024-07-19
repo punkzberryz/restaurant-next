@@ -13,6 +13,7 @@ import { Trash } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { unitLabels } from "../../food/components/food-schema";
 import { formatPrice } from "@/lib/format-price";
+import { formatDateToThaiDate } from "@/lib/format-date";
 
 interface OrderTableProps {
   form: UseFormReturn<OrderFormSchema>;
@@ -26,6 +27,7 @@ export const OrderTable = ({ form }: OrderTableProps) => {
     form.setValue("foods", foods);
     const totalPrice = foods.reduce((acc, food) => acc + food.totalPrice, 0);
     form.setValue("totalPrice", totalPrice);
+    form.setValue("foodQuantity", foods.length);
   };
 
   return (
@@ -107,7 +109,7 @@ const SummaryRow = ({
         <TableCell colSpan={5}>
           <p className="ml-auto w-[100px]">วันที่</p>
         </TableCell>
-        <TableCell colSpan={2}>{date}</TableCell>
+        <TableCell colSpan={2}>{formatDateToThaiDate(date)}</TableCell>
       </TableRow>
     </>
   );

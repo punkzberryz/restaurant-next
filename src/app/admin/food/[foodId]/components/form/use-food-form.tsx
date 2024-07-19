@@ -26,7 +26,6 @@ export function useFoodForm() {
     initialData: (Food & { images: Image[] }) | null,
     imageFiles: MultipleImagesState,
   ) => {
-    //check price
     setLoading(true);
 
     //check if image is still uploading

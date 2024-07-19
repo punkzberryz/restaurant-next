@@ -26,6 +26,7 @@ model User {
   displayName    String
   role           UserRole  @default(USER)
   sessions       Session[]
+  orders         Order[]   @relation("OrderToStaff")
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
 }
@@ -91,7 +92,25 @@ model Restaurant {
   updatedAt    DateTime @updatedAt
 }
 
-// model Bill {
-//   id   String   @id @default(cuid())
-//   date DateTime @default(now()) @db.Date
-// }
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  DELIVERED
+}
+
+model Order {
+  id           String      @id @default(cuid())
+  staffId      String
+  status       OrderStatus @default(PENDING)
+  staff        User        @relation("OrderToStaff", fields: [staffId], references: [id])
+  date         DateTime    @db.Date()
+  foods        String      @db.Text //JSON stringtified array of {foodId: Int, foodQuantity: Int, totalAmount: Float, foodName: String, foodPrice: Float}
+  foodQuantity Int
+  totalPrice   Float
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  @@index([staffId])
+  @@index([date])
+}
