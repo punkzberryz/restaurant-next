@@ -7,6 +7,7 @@ import { BillMetricCard } from "./components/bill-metric-card";
 import { SaleMetricCard } from "./components/sales-metric-card";
 import { StaffMetricCard } from "./components/staff-metric-card";
 import { FetchSalesData } from "./components/chart/fetch-sale-data";
+import { Metadata } from "next";
 
 interface DashboardPageProps {
   searchParams: {
@@ -43,3 +44,7 @@ const DashboardPage = ({ searchParams }: DashboardPageProps) => {
 };
 
 export default DashboardPage;
+export const metadata: Metadata = {
+  title: "รายงาน | Dashboard",
+  description: "รายงานข้อมูลทั้งหมดของร้านค้า",
+};
