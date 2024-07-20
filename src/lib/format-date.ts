@@ -15,12 +15,20 @@ const formatDateToThaiDate = (
   options: {
     shortDate?: boolean;
     excludeYear?: boolean;
+    excludeDay?: boolean;
+    onlyYear?: boolean;
   } = {},
 ) => {
   const convertedDate = convertYearToBuddhist(date);
-  let formatString = "dd LLLL";
+  if (options?.onlyYear) {
+    return format(convertedDate, "yyyy", {
+      locale: th,
+    });
+  }
+
+  let formatString = options?.excludeDay ? "LLLL" : "dd LLLL";
   if (options?.shortDate) {
-    formatString = "dd LLL";
+    formatString = options?.excludeDay ? "LLL" : "dd LLL";
   }
   if (!options?.excludeYear) {
     formatString = formatString + " yyyy";
