@@ -1,6 +1,6 @@
 import { UserRole } from "@prisma/client";
 
-export const UserRoleOptions: { value: UserRole; label: string }[] = [
+export const userRoleOptions: { value: UserRole; label: string }[] = [
   {
     value: UserRole["ADMIN"],
     label: "แอดมิน",
@@ -12,5 +12,10 @@ export const UserRoleOptions: { value: UserRole; label: string }[] = [
 ] as const;
 
 export const userRoleLabels = new Map(
-  UserRoleOptions.map((u) => [u.value, u.label]),
+  userRoleOptions.map((u) => [u.value, u.label]),
 );
+type UserRoleOption = (typeof userRoleOptions)[number]["value"];
+export const userRoleSchema: [UserRoleOption, ...UserRoleOption[]] = [
+  userRoleOptions[0].value,
+  ...userRoleOptions.slice(1).map((u) => u.value),
+];

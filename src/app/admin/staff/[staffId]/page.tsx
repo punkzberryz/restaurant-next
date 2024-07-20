@@ -1,10 +1,17 @@
 import { MaxWidthWrapper } from "@/components/max-width-wrapper";
 import { PageHeader } from "@/components/navbar/page-header";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { db } from "@/lib/db";
-import { delay } from "@/lib/delay";
-import { BadRequestError } from "@/lib/error";
+import {
+  BadRequestError,
+  catchErrorTypeChecker,
+  ErrorType,
+  UnauthorizedError,
+} from "@/lib/error";
 import { Suspense } from "react";
+import { EditStaffForm } from "./components/form/edit-staff-form";
+import { validateRequest } from "@/lib/auth";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const StaffByIdPage = ({
   params: { staffId },
@@ -21,10 +28,18 @@ const StaffByIdPage = ({
           { href: "#", title: `Staff id: ${staffId}` },
         ]}
       />
-      <MaxWidthWrapper className="flex flex-col">
-        <Card className="mx-auto">
+      <MaxWidthWrapper>
+        <Card className="mx-auto max-w-4xl">
           <CardContent className="flex flex-col space-y-8 p-6">
-            <Suspense fallback={<div>Loading...</div>}>
+            <CardTitle>แก้ไขข้อมูลพนักงาน</CardTitle>
+            <Suspense
+              fallback={
+                <div className="flex flex-col space-y-4">
+                  <Skeleton className="h-44" />
+                  <Skeleton className="h-44" />
+                </div>
+              }
+            >
               <FetchUserById id={staffId} />
             </Suspense>
           </CardContent>
@@ -35,17 +50,35 @@ const StaffByIdPage = ({
 };
 
 const FetchUserById = async ({ id }: { id: string }) => {
-  await delay(1000);
   try {
-    const user = await db.user.findUnique({ where: { id } });
-    if (!user) throw new BadRequestError(" id พนักงานไม่ถูกต้อง");
+    const userReq = validateRequest();
+    const staffReq = db.user.findUnique({ where: { id } });
+    const [staff, { user }] = await Promise.all([staffReq, userReq]);
+
+    if (!user) {
+      throw new UnauthorizedError();
+    }
+    if (!staff) {
+      throw new BadRequestError();
+    }
+    if (user.role !== "ADMIN" && staff.id !== user.id) {
+      throw new UnauthorizedError();
+    }
     return (
       <div>
-        {user.displayName} - {user.email}
+        <EditStaffForm initialData={staff} />
       </div>
     );
   } catch (err) {
-    throw err;
+    const { message, type } = catchErrorTypeChecker(err);
+    if (type === ErrorType.Unauthorized) {
+      throw new UnauthorizedError("ไม่มีสิทธิ์ในการเข้าถึงข้อมูล");
+    }
+    if (type === ErrorType.BadRequest) {
+      throw new BadRequestError("ไม่พบข้อมูลพนักงาน");
+    }
+    console.log({ message, type });
+    throw new Error("เกิดข้อผิดพลาดในการดึงข้อมูลพนักงาน");
   }
 };
 

@@ -64,7 +64,7 @@ const FetchStaff = async ({ id }: { id: string }) => {
     if (!staff) {
       throw new BadRequestError();
     }
-    if (user.role !== "ADMIN" || staff.id !== user.id) {
+    if (user.role !== "ADMIN" && staff.id !== user.id) {
       throw new UnauthorizedError();
     }
     //If staff is admin, only allow that admin to change password
@@ -83,7 +83,6 @@ const FetchStaff = async ({ id }: { id: string }) => {
     console.log({ message, type });
     throw new Error("เกิดข้อผิดพลาดในการดึงข้อมูลพนักงาน");
   }
-  return null;
 };
 
 export default ChangePasswordPage;

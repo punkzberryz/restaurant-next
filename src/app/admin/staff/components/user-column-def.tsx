@@ -6,6 +6,7 @@ import { User } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
 import { Pencil } from "lucide-react";
 import Link from "next/link";
+import { DeleteButton } from "./delete-button";
 
 export const userColumnDef: ColumnDef<User>[] = [
   {
@@ -46,9 +47,17 @@ export const userColumnDef: ColumnDef<User>[] = [
   {
     header: "แก้ไขข้อมูล",
     size: 40,
+    cell: ({ row }) => (
+      <Button className="-my-2 h-8 rounded-md px-2" asChild variant="edit">
+        <Link href={`/admin/staff/${row.original.id}`}>
+          <Pencil className="h-3 w-3" />
+        </Link>
+      </Button>
+    ),
   },
   {
     header: "ลบ",
     size: 40,
+    cell: ({ row }) => <DeleteButton staff={row.original} />,
   },
 ];
