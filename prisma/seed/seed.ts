@@ -5,16 +5,16 @@ import { Food, FoodUnit, PrismaClient, User } from "@prisma/client";
 const prisma = new PrismaClient();
 
 const initialUsers: User[] = [
-  {
-    id: "w8e7qh2k101dfw4",
-    role: "ADMIN",
-    displayName: "kang",
-    email: "kanggive@gmail.com",
-    hashedPassword:
-      "$argon2id$v=19$m=19456,t=2,p=1$QbbhOC234hdjKeC2bl4VrQ$NJcbej1DKPdmPm4zsHU5SWO4lQbF+AZ5HIJX0xYr6Nc",
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
+  // {
+  //   id: "w8e7qh2k101dfw4",
+  //   role: "ADMIN",
+  //   displayName: "kang",
+  //   email: "kanggive@gmail.com",
+  //   hashedPassword:
+  //     "$argon2id$v=19$m=19456,t=2,p=1$QbbhOC234hdjKeC2bl4VrQ$NJcbej1DKPdmPm4zsHU5SWO4lQbF+AZ5HIJX0xYr6Nc",
+  //   createdAt: new Date(),
+  //   updatedAt: new Date(),
+  // },
   {
     id: "x0v1hs2a365qbg1",
     role: "USER",
@@ -58,57 +58,57 @@ const initialUsers: User[] = [
 
 const seed = async () => {
   // USERS
-  //   await prisma.user.deleteMany();
-  //   await prisma.user.createMany({
-  //     data: initialUsers,
-  //   });
+  // await prisma.user.deleteMany();
+  // await prisma.user.createMany({
+  //   data: initialUsers,
+  // });
   //   RESTAURANT
-  //   await prisma.restaurant.deleteMany();
-  //   await prisma.restaurant.create({
-  //     data: {
-  //       address: "ติดเมกะ บางนา",
-  //       id: 1,
-  //       name: "แซนวิชเนื้อไทยวากิว",
-  //       description: "อร่อย มัน เคี้ยวง่าย ละลายในปาก",
-  //       phone: "0932231211",
-  //       logoImageUrl:
-  //         "https://res.cloudinary.com/djcbkikuf/image/upload/v1721395570/dev-restaurant-next/foods/imbjfozwtvqfv2v2x6ax.jpg",
-  //     },
-  //   });
+  // await prisma.restaurant.deleteMany();
+  // await prisma.restaurant.create({
+  //   data: {
+  //     address: "ติดเมกะ บางนา",
+  //     id: 1,
+  //     name: "แซนวิชเนื้อไทยวากิว",
+  //     description: "อร่อย มัน เคี้ยวง่าย ละลายในปาก",
+  //     phone: "0932231211",
+  //     logoImageUrl:
+  //       "https://res.cloudinary.com/djcbkikuf/image/upload/v1721395570/dev-restaurant-next/foods/imbjfozwtvqfv2v2x6ax.jpg",
+  //   },
+  // });
   //   //   CATEGORIES
-  //   await prisma.food.deleteMany();
-  //   await prisma.category.deleteMany();
-  //   await prisma.category.createMany({
-  //     data: [
-  //       { id: 1, name: "Sea food" },
-  //       { id: 2, name: "ชุดผัก" },
-  //       { id: 3, name: "น้ำจิ้ม" },
-  //       { id: 4, name: "เครื่องดื่ม" },
-  //       { id: 5, name: "อาหารทานเล่น" },
-  //       { id: 6, name: "เนื้อชั่งกิโล" },
-  //       { id: 7, name: "เนื้อย่างชุด" },
-  //     ],
-  //   });
+  // await prisma.food.deleteMany();
+  // await prisma.category.deleteMany();
+  // await prisma.category.createMany({
+  //   data: [
+  //     { id: 1, name: "Sea food" },
+  //     { id: 2, name: "ชุดผัก" },
+  //     { id: 3, name: "น้ำจิ้ม" },
+  //     { id: 4, name: "เครื่องดื่ม" },
+  //     { id: 5, name: "อาหารทานเล่น" },
+  //     { id: 6, name: "เนื้อชั่งกิโล" },
+  //     { id: 7, name: "เนื้อย่างชุด" },
+  //   ],
+  // });
   //   // FOODS
-  //   const foodPromises: Promise<any>[] = [];
-  //   for (const food of initialFoods) {
-  //     foodPromises.push(
-  //       prisma.food.create({
-  //         data: {
-  //           name: food.name,
-  //           price: food.price,
-  //           unit: food.unit,
-  //           images: {
-  //             createMany: {
-  //               data: food.images.map((image: { url: string }) => image),
-  //             },
+  // const foodPromises: Promise<any>[] = [];
+  // for (const food of initialFoods) {
+  //   foodPromises.push(
+  //     prisma.food.create({
+  //       data: {
+  //         name: food.name,
+  //         price: food.price,
+  //         unit: food.unit,
+  //         images: {
+  //           createMany: {
+  //             data: food.images.map((image: { url: string }) => image),
   //           },
-  //           categoryId: food.categoryId,
   //         },
-  //       }),
-  //     );
-  //   }
-  //   await Promise.all(foodPromises);
+  //         categoryId: food.categoryId,
+  //       },
+  //     }),
+  //   );
+  // }
+  // await Promise.all(foodPromises);
   // BILL
   const users = await prisma.user.findMany();
   const foods = await prisma.food.findMany();
@@ -205,6 +205,108 @@ const initialFoods = [
       },
       {
         url: "https://res.cloudinary.com/djcbkikuf/image/upload/v1721190492/dev-restaurant-next/foods/agjpiv32izxtc1p3ej7r.png",
+      },
+    ],
+  },
+  {
+    name: "ผักสด (ใหญ่)",
+    unit: FoodUnit.BOWL,
+    price: 90,
+    categoryId: 2,
+    images: [
+      {
+        url: "https://res.cloudinary.com/djcbkikuf/image/upload/v1721395570/dev-restaurant-next/foods/imbjfozwtvqfv2v2x6ax.jpg",
+      },
+    ],
+  },
+  {
+    name: "เนื้อหมูสไลด์",
+    unit: FoodUnit.KG,
+    price: 2000,
+    categoryId: 6,
+    images: [
+      {
+        url: "https://res.cloudinary.com/djcbkikuf/image/upload/v1721205407/dev-restaurant-next/foods/lqtfazz87zccwyq5a3ik.jpg",
+      },
+    ],
+  },
+  {
+    name: "น้ำเปล่า",
+    unit: FoodUnit.BOTTLE,
+    price: 20,
+    categoryId: 4,
+    images: [
+      {
+        url: "https://res.cloudinary.com/djcbkikuf/image/upload/v1721205362/dev-restaurant-next/foods/ovqjomyqdnzxbrs5kofv.webp",
+      },
+    ],
+  },
+  {
+    name: "น้ำแข็ง",
+    unit: FoodUnit.BOTTLE,
+    price: 15,
+    categoryId: 4,
+    images: [
+      {
+        url: "https://res.cloudinary.com/djcbkikuf/image/upload/v1721205302/dev-restaurant-next/foods/nj8svzsjiibl7loswq82.jpg",
+      },
+    ],
+  },
+  {
+    name: "เฟรนช์ฟรายชีส",
+    unit: FoodUnit.PLATE,
+    price: 95,
+    categoryId: 5,
+    images: [
+      {
+        url: "https://res.cloudinary.com/djcbkikuf/image/upload/v1721205244/dev-restaurant-next/foods/zfo9wj3ufah91bfhykei.jpg",
+      },
+    ],
+  },
+  {
+    name: "หมูสามชั้นทอด",
+    unit: FoodUnit.PLATE,
+    price: 120,
+    categoryId: 5,
+    images: [
+      {
+        url: "https://res.cloudinary.com/djcbkikuf/image/upload/v1721205178/dev-restaurant-next/foods/lfav7kau9vkdv4htfb0g.webp",
+      },
+    ],
+  },
+  {
+    name: "เอ็นไก่ทอด",
+    unit: FoodUnit.PLATE,
+    price: 120,
+    categoryId: 5,
+    images: [
+      {
+        url: "https://res.cloudinary.com/djcbkikuf/image/upload/v1721205129/dev-restaurant-next/foods/mmw6eedkkmfl6o4ldyjy.jpg",
+      },
+    ],
+  },
+  {
+    name: "ผัดกระเพราปลาหมึก",
+    unit: FoodUnit.PLATE,
+    price: 150,
+    categoryId: 5,
+    images: [
+      {
+        url: "https://res.cloudinary.com/djcbkikuf/image/upload/v1721205009/dev-restaurant-next/foods/hgt2n56xib45cuezzy3d.jpg",
+      },
+    ],
+  },
+  {
+    name: "ปลากระพงทอดน้ำปลา",
+    unit: FoodUnit.PLATE,
+    price: 210,
+    categoryId: 5,
+    images: [
+      {
+        url: "https://res.cloudinary.com/djcbkikuf/image/upload/v1721204941/dev-restaurant-next/foods/vdfx1nqrjx7altbarawo.jpg",
+      },
+      {
+        url: "https://res.cloudinary.com/djcbkikuf/image/upload/v1721204923/dev-restaurant-next/foods/xgzusaydl1bgcdsrzgxn.jpg",
       },
     ],
   },
