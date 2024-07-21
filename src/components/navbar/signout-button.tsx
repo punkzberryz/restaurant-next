@@ -89,7 +89,7 @@ async function handleSignout(
   setLoading: (loading: boolean) => void,
 ) {
   setLoading(true);
-  const resp = await fetch(`${config.baseUrl}/auth/signout`, {
+  const resp = await fetch("/auth/signout", {
     method: "GET",
     cache: "no-store",
   });
