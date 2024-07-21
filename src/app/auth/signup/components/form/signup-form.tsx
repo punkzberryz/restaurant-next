@@ -10,10 +10,10 @@ import { PasswordFields } from "./password-fields";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { signupAction } from "../signup-action";
 import toast from "react-hot-toast";
 import { SignUpErrorResponse } from "../signup-error-response";
 import { LoadingBars } from "@/components/ui/loading-bars";
+import { Session, User } from "@prisma/client";
 
 export const SignUpForm = () => {
   const router = useRouter();
@@ -37,10 +37,11 @@ export const SignUpForm = () => {
       return;
     }
     setIsLoading(true);
-    const { error, session, user } = await signupAction({ data });
+    // const { error, session, user } = await signupAction({ data });
+    const { error, session, user } = await signUpQuery({ data });
     setIsLoading(false);
     if (error || !session || !user) {
-      if (error.message === SignUpErrorResponse.emailAlreadyExists) {
+      if (error?.message === SignUpErrorResponse.emailAlreadyExists) {
         toast.error("อีเมลนี้มีผู้ใช้งานแล้ว");
         return;
       }
@@ -79,3 +80,29 @@ export const SignUpForm = () => {
   );
 };
 const handleFormError = (error: FieldErrors<SignUpSchema>) => {};
+
+const signUpQuery = async ({ data }: { data: SignUpSchema }) => {
+  try {
+    const resp = await fetch("/auth/signup/fetch", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ data }),
+    });
+
+    if (!resp.ok) {
+      throw new Error("error");
+    }
+
+    const { error, session, user } = (await resp.json()) as {
+      user: User | null;
+      session: Session | null;
+      error: { message: string; code: number } | null;
+    };
+
+    return { user, session, error };
+  } catch (err) {
+    throw err;
+  }
+};
