@@ -6,7 +6,8 @@ import {
   ChangePasswordSchema,
 } from "./change-password-schema";
 import { BadRequestError, UnauthorizedError } from "@/lib/error";
-import { Argon2id } from "oslo/password";
+// import { Argon2id } from "oslo/password";
+import bcrypt from "bcryptjs";
 import { validateRequest } from "@/lib/auth";
 import { db } from "@/lib/db";
 
@@ -35,7 +36,8 @@ export const changeUserPasswordAction = async ({
       throw new UnauthorizedError();
     }
 
-    const hashedPassword = await new Argon2id().hash(data.password);
+    // const hashedPassword = await new Argon2id().hash(data.password);
+    const hashedPassword = await bcrypt.hash(data.password, 10);
     const updatedStaff = await db.user.update({
       where: { id: staffId },
       data: {

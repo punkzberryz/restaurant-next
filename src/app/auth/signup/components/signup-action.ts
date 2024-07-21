@@ -2,12 +2,13 @@
 
 import { generateId } from "lucia";
 import { signUpSchema, SignUpSchema } from "./form/signup-schema";
-import { Argon2id } from "oslo/password";
+// import { Argon2id } from "oslo/password";
 import { db } from "@/lib/db";
 import { BadRequestError } from "@/lib/error";
 import { SignUpErrorResponse } from "./signup-error-response";
 import { createSession } from "@/lib/auth";
 import { catchErrorForServerActionHelper } from "@/lib/error/catch-error-action-helper";
+import bcrypt from "bcryptjs";
 
 export const signupAction = async ({ data }: { data?: SignUpSchema }) => {
   try {
@@ -21,7 +22,8 @@ export const signupAction = async ({ data }: { data?: SignUpSchema }) => {
     }
 
     const { password, email, displayName } = data;
-    const hashedPassword = await new Argon2id().hash(password);
+    // const hashedPassword = await new Argon2id().hash(password);
+    const hashedPassword = await bcrypt.hash(password, 10);
     const id = generateId(15);
     const existingUser = await db.user.findUnique({
       where: { email },

@@ -7,6 +7,7 @@ import { Argon2id } from "oslo/password";
 import { SignInErrorResponse } from "./signin-error-response";
 import { createSession } from "@/lib/auth";
 import { catchErrorForServerActionHelper } from "@/lib/error/catch-error-action-helper";
+import bcrypt from "bcryptjs";
 
 export const signinAction = async ({ data }: { data: SignInSchema }) => {
   try {
@@ -19,10 +20,16 @@ export const signinAction = async ({ data }: { data: SignInSchema }) => {
     const user = await db.user.findUnique({
       where: { email },
     });
-    const validPassword = await new Argon2id().verify(
-      user?.hashedPassword ?? "nil",
+
+    const validPassword = await bcrypt.compare(
       password,
+      user?.hashedPassword ?? "nil",
     );
+    console.log("validPassword", validPassword);
+    // const validPassword = await new Argon2id().verify(
+    //   user?.hashedPassword ?? "nil",
+    //   password,
+    // );
     if (!user || !validPassword) {
       throw new BadRequestError(SignInErrorResponse.passwordOrEmailIsNotMatch);
     }

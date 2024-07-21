@@ -14,6 +14,7 @@ import toast from "react-hot-toast";
 import { SignUpErrorResponse } from "../signup-error-response";
 import { LoadingBars } from "@/components/ui/loading-bars";
 import { Session, User } from "@prisma/client";
+import { signupAction } from "../signup-action";
 
 export const SignUpForm = () => {
   const router = useRouter();
@@ -37,8 +38,8 @@ export const SignUpForm = () => {
       return;
     }
     setIsLoading(true);
-    // const { error, session, user } = await signupAction({ data });
-    const { error, session, user } = await signUpQuery({ data });
+    const { error, session, user } = await signupAction({ data });
+    // const { error, session, user } = await signUpQuery({ data });
     setIsLoading(false);
     if (error || !session || !user) {
       if (error?.message === SignUpErrorResponse.emailAlreadyExists) {
