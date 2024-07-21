@@ -1,4 +1,5 @@
 import { UnauthorizedError } from "@/lib/error";
+import { UserRole } from "@prisma/client";
 import Image from "next/image";
 
 //We create a dictionary of messages for unauthorized users
@@ -6,29 +7,24 @@ import Image from "next/image";
 const UnauthorizedMessage: {
   [key: string]: string;
 } = {
-  notSignIn: "[Unauth] คุณยังไม่ได้เข้าสู่ระบบ",
-  notFeeder: "[Unauth] คุณไม่ใช่ผู้ป้อนงาน",
-  invalidQuery: "[Unauth] คุณส่งคำสั่งไม่ถูกต้อง",
-  notAuthorized: "[Unauth] คุณไม่มีสิทธิ์เข้าถึงหน้านี้",
-  notOwner: "[Unauth] คุณไม่ใช่เจ้าของงาน",
+  notSignIn: "คุณยังไม่ได้เข้าสู่ระบบ",
+  notAdmin: "คุณไม่ใช่แอดมิน",
+  invalidQuery: "คุณส่งคำสั่งไม่ถูกต้อง",
+  notAuthorized: "คุณไม่มีสิทธิ์เข้าถึงหน้านี้",
+  notOwner: "คุณไม่ใช่เจ้าของงาน",
 };
 
 export enum UnauthorizedMessageCode {
   notSignIn = "notSignIn",
-  notFeeder = "notFeeder",
+  notAdmin = "notAdmin",
   invalidQuery = "invalidQuery",
   notAuthorized = "notAuthorized",
   notOwner = "notOwner",
 }
 
-//We use this function to redirect unauthorized users to unauthorized page
-export const unauthorizedRedirect = (messageCode: UnauthorizedMessageCode) => {
-  throw new UnauthorizedError(UnauthorizedMessage[messageCode]);
-};
-
 export const getMessageIfUnauthorized = (message?: string) => {
   if (!message) return;
-  return message.split("[Unauth] ")[1] as string | undefined;
+  return UnauthorizedMessage[message];
 };
 
 interface ErrorUiProps {

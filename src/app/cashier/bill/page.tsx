@@ -8,31 +8,25 @@ import { Plus } from "lucide-react";
 import { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
-import { Client } from "./components/client";
 import { validateRequest } from "@/lib/auth";
 import { UnauthorizedError } from "@/lib/error";
 import { UnauthorizedMessageCode } from "@/components/error-ui";
+import { Client } from "./components/client";
 
 const BillPage = () => {
   return (
     <>
       <PageHeader
         title="จัดการรายการบิล | Bill"
-        links={[
-          {
-            href: "/admin",
-            title: "Dashboard",
-          },
-          { href: "#", title: "Bill" },
-        ]}
-        role="admin"
+        links={[{ href: "/cashier/bill", title: "Bill" }]}
+        role="cashier"
       />
       <MaxWidthWrapper>
         <Card>
           <CardContent className="flex flex-col space-y-8 p-6">
             <div className="flex items-center justify-between">
               <CardTitle>รายการบิล</CardTitle>
-              <Link href="/admin/order" className={buttonVariants({})}>
+              <Link href="/cashier" className={buttonVariants({})}>
                 <Plus className="h-4 w-4 md:mr-2" />
                 <span className="hidden md:block">สร้างออเดอร์อาหาร</span>
               </Link>
@@ -60,8 +54,6 @@ const FetchOrders = async () => {
 
   const [{ user }, orders] = await Promise.all([validateReq, odersReq]);
   if (!user) throw new UnauthorizedError(UnauthorizedMessageCode.notSignIn);
-  if (user?.role !== "ADMIN")
-    throw new UnauthorizedError(UnauthorizedMessageCode.notAdmin);
 
   return (
     <Client

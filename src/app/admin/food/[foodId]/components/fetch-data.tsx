@@ -2,6 +2,7 @@ import { validateRequest } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { BadRequestError, UnauthorizedError } from "@/lib/error";
 import { FoodForm } from "./form/food-form";
+import { UnauthorizedMessageCode } from "@/components/error-ui";
 
 interface FetchDataProps {
   foodId: string;
@@ -51,7 +52,8 @@ const fetchFood = async (foodId: string, isNew: boolean) => {
   if (isNaN(id)) {
     throw new BadRequestError("รหัส id ไม่ถูกต้อง");
   }
-  const food = await db.food.findUnique({
+  const validateReq = validateRequest();
+  const foodReq = db.food.findUnique({
     where: {
       id,
     },
@@ -59,6 +61,11 @@ const fetchFood = async (foodId: string, isNew: boolean) => {
       images: true,
     },
   });
+  const [{ user }, food] = await Promise.all([validateReq, foodReq]);
+  if (!user) throw new UnauthorizedError(UnauthorizedMessageCode.notSignIn);
+  if (user?.role !== "ADMIN")
+    throw new UnauthorizedError(UnauthorizedMessageCode.notAdmin);
+
   if (!food) {
     throw new BadRequestError("ไม่พบข้อมูลอาหาร");
   }

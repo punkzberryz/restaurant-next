@@ -17,7 +17,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "../ui/button";
-import { LayoutGrid, UserIcon } from "lucide-react";
+import { CookingPot, LayoutGrid, UserIcon } from "lucide-react";
 import Link from "next/link";
 import { SignOutDropdownItem } from "./signout-button";
 import { Skeleton } from "../ui/skeleton";
@@ -78,17 +78,30 @@ const FetchUser = async () => {
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuItem className="hover:cursor-pointer" asChild>
-            <Link href="/admin" className="flex items-center">
-              <LayoutGrid className="mr-3 h-4 w-4 text-muted-foreground" />
-              Dashboard
-            </Link>
+            {user.role === "ADMIN" ? (
+              <Link href="/admin" className="flex items-center">
+                <LayoutGrid className="mr-3 h-4 w-4 text-muted-foreground" />
+                Dashboard
+              </Link>
+            ) : (
+              <Link href="/cashier" className="flex items-center">
+                <CookingPot className="mr-3 h-4 w-4 text-muted-foreground" />
+                Order
+              </Link>
+            )}
           </DropdownMenuItem>
-          <DropdownMenuItem className="hover:cursor-pointer" asChild>
-            <Link href="/account" className="flex items-center">
-              <UserIcon className="mr-3 h-4 w-4 text-muted-foreground" />
-              Account
-            </Link>
-          </DropdownMenuItem>
+          {user.role === "ADMIN" && (
+            <DropdownMenuItem className="hover:cursor-pointer" asChild>
+              <Link
+                href={`/admin/staff/${user.id}`}
+                className="flex items-center"
+              >
+                <UserIcon className="mr-3 h-4 w-4 text-muted-foreground" />
+                {/* TODO: create account Page for Cashier */}
+                Account
+              </Link>
+            </DropdownMenuItem>
+          )}
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <SignOutDropdownItem />

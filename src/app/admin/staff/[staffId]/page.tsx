@@ -12,6 +12,7 @@ import { Suspense } from "react";
 import { EditStaffForm } from "./components/form/edit-staff-form";
 import { validateRequest } from "@/lib/auth";
 import { Skeleton } from "@/components/ui/skeleton";
+import { UnauthorizedMessageCode } from "@/components/error-ui";
 
 const StaffByIdPage = ({
   params: { staffId },
@@ -27,6 +28,7 @@ const StaffByIdPage = ({
           { href: "/admin/staff", title: "Staff" },
           { href: "#", title: `Staff id: ${staffId}` },
         ]}
+        role="admin"
       />
       <MaxWidthWrapper>
         <Card className="mx-auto max-w-4xl">
@@ -55,14 +57,12 @@ const FetchUserById = async ({ id }: { id: string }) => {
     const staffReq = db.user.findUnique({ where: { id } });
     const [staff, { user }] = await Promise.all([staffReq, userReq]);
 
-    if (!user) {
-      throw new UnauthorizedError();
-    }
+    if (!user) throw new UnauthorizedError(UnauthorizedMessageCode.notSignIn);
     if (!staff) {
-      throw new BadRequestError();
+      throw new BadRequestError("ไม่พบข้อมูลพนักงาน");
     }
     if (user.role !== "ADMIN" && staff.id !== user.id) {
-      throw new UnauthorizedError();
+      throw new UnauthorizedError("คุณไม่มีสิทธิ์ในการเข้าถึงข้อมูลพนักงาน");
     }
     return (
       <div>
@@ -72,7 +72,7 @@ const FetchUserById = async ({ id }: { id: string }) => {
   } catch (err) {
     const { message, type } = catchErrorTypeChecker(err);
     if (type === ErrorType.Unauthorized) {
-      throw new UnauthorizedError("ไม่มีสิทธิ์ในการเข้าถึงข้อมูล");
+      throw err;
     }
     if (type === ErrorType.BadRequest) {
       throw new BadRequestError("ไม่พบข้อมูลพนักงาน");

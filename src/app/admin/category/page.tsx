@@ -16,6 +16,7 @@ import {
 } from "@/lib/error";
 import { Client } from "./components/client";
 import { DataTableSkeleton } from "@/components/table/data-table-skeleton";
+import { UnauthorizedMessageCode } from "@/components/error-ui";
 
 const CategoryPage = () => {
   return (
@@ -26,6 +27,7 @@ const CategoryPage = () => {
           { href: "/admin", title: "Dashboard" },
           { href: "#", title: "Category" },
         ]}
+        role="admin"
       />
       <MaxWidthWrapper>
         <Card>
@@ -54,9 +56,11 @@ const FetchCategories = async () => {
   try {
     //validate user
     const { user } = await validateRequest();
-    if (!user) {
-      throw new UnauthorizedError("ไม่พบผู้ใช้");
-    }
+
+    if (!user) throw new UnauthorizedError(UnauthorizedMessageCode.notSignIn);
+    if (user?.role !== "ADMIN")
+      throw new UnauthorizedError(UnauthorizedMessageCode.notAdmin);
+
     const categories = await db.category.findMany({
       take: CATEGORIES_LIMIT,
       skip: (CATEGORIES_PAGE_ID - 1) * CATEGORIES_LIMIT,

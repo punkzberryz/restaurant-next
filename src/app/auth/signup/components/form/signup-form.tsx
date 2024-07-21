@@ -49,9 +49,15 @@ export const SignUpForm = () => {
     }
 
     toast.success("สมัครสมาชิกสำเร็จ");
-    router.refresh();
-    //check user role
-    router.push("/admin");
+    if (user.role === "ADMIN") {
+      router.push("/admin");
+      router.refresh();
+      return;
+    } else {
+      router.push("/cashier");
+      router.refresh();
+      return;
+    }
   };
 
   return (

@@ -1,6 +1,10 @@
 "use client";
 
-import { getMessageIfUnauthorized, ErrorUi } from "@/components/error-ui";
+import {
+  getMessageIfUnauthorized,
+  ErrorUi,
+  UnauthorizedMessageCode,
+} from "@/components/error-ui";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -14,19 +18,26 @@ export default function Error({
   reset: () => void;
 }) {
   const router = useRouter();
-  console.error(error);
   const errMessage = getMessageIfUnauthorized(error.message);
+
   if (errMessage) {
     return (
       <ErrorUi title="401 ไม่ได้รับอนุญาต">
         <p className="pb-5 text-base font-light md:text-lg">
-          <span>คุณไม่ได้รับอนุญาตให้เข้าถึงหน้านี้เนื่องจาก</span>
+          <span>คุณไม่ได้รับอนุญาตให้เข้าถึงหน้านี้เนื่องจาก...</span>
           <span>{errMessage}</span>
         </p>
         <div className="grid grid-cols-1 gap-y-4">
-          <Button className="w-full" asChild>
-            <Link href="/">กลับไปยังหน้าหลัก</Link>
-          </Button>
+          {errMessage ===
+          getMessageIfUnauthorized(UnauthorizedMessageCode.notSignIn) ? (
+            <Button className="w-full" asChild>
+              <Link href="/auth/signin">เข้าสู่ระบบ</Link>
+            </Button>
+          ) : (
+            <Button className="w-full" asChild>
+              <Link href="/">กลับไปยังหน้าหลัก</Link>
+            </Button>
+          )}
         </div>
       </ErrorUi>
     );
@@ -34,7 +45,7 @@ export default function Error({
   return (
     <ErrorUi title="อุ๊ปปปซ์">
       <p className="pb-5 text-base font-light md:text-lg">
-        <span>เกิดข้อผิดพลาดเนื่องจาก</span>
+        <span>เกิดข้อผิดพลาดเนื่องจาก...</span>
         <span>{error.message}</span>
       </p>
       <div className="grid grid-cols-1 gap-y-4">

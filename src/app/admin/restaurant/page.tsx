@@ -13,6 +13,7 @@ import { unstable_noStore as noStore } from "next/cache";
 import { Suspense } from "react";
 import { RestaurantForm } from "./components/restaurant-form";
 import { Skeleton } from "@/components/ui/skeleton";
+import { UnauthorizedMessageCode } from "@/components/error-ui";
 const RestaurantPage = () => {
   noStore();
 
@@ -24,6 +25,7 @@ const RestaurantPage = () => {
           { href: "/admin", title: "Dashboard" },
           { href: "#", title: "Restaurant" },
         ]}
+        role="admin"
       />
       <MaxWidthWrapper>
         <Card className="mx-auto max-w-4xl">
@@ -56,9 +58,10 @@ const FetchRestaurant = async () => {
   try {
     //validate user
     const { user } = await validateRequest();
-    if (!user) {
-      throw new UnauthorizedError("ไม่พบผู้ใช้");
-    }
+    if (!user) throw new UnauthorizedError(UnauthorizedMessageCode.notSignIn);
+    if (user?.role !== "ADMIN")
+      throw new UnauthorizedError(UnauthorizedMessageCode.notAdmin);
+
     //fetch restaurant info
     const restaurant = await db.restaurant.findFirst();
 

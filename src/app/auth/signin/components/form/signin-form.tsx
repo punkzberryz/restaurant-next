@@ -39,9 +39,13 @@ export const SignInForm = () => {
       return;
     }
     toast.success("เข้าสู่ระบบสำเร็จ");
-    router.refresh();
     if (user.role === "ADMIN") {
       router.push("/admin");
+      router.refresh();
+      return;
+    } else {
+      router.push("/cashier");
+      router.refresh();
       return;
     }
   };

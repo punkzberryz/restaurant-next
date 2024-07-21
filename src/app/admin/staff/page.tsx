@@ -13,6 +13,7 @@ import { validateRequest } from "@/lib/auth";
 import { Client } from "./components/client";
 import { Suspense } from "react";
 import { DataTableSkeleton } from "@/components/table/data-table-skeleton";
+import { UnauthorizedMessageCode } from "@/components/error-ui";
 
 const StaffPage = async () => {
   const users = await db.user.findMany();
@@ -24,6 +25,7 @@ const StaffPage = async () => {
           { href: "/admin", title: "Dashboard" },
           { href: "/admin/staff", title: "Staff" },
         ]}
+        role="admin"
       />
       <MaxWidthWrapper>
         <Card>
@@ -54,9 +56,10 @@ const FetchUsers = async () => {
       },
     });
     const [{ user }, users] = await Promise.all([userReq, usersReq]);
-    if (!user) {
-      throw new UnauthorizedError("ไม่พบผู้ใช้");
-    }
+    if (!user) throw new UnauthorizedError(UnauthorizedMessageCode.notSignIn);
+    if (user?.role !== "ADMIN")
+      throw new UnauthorizedError(UnauthorizedMessageCode.notAdmin);
+
     return (
       <Client
         initialData={{ users, hasMore: users.length === USERS_LIMIT }}

@@ -1,11 +1,12 @@
 import { validateRequest } from "@/lib/auth";
 import { fetchOrders } from "./fetch-orders";
-import { UnauthorizedError } from "@/lib/error";
 import { ArrowRight, Banknote } from "lucide-react";
 import Link from "next/link";
 import { formatPrice } from "@/lib/format-price";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Suspense } from "react";
+import { UnauthorizedMessageCode } from "@/components/error-ui";
+import { UnauthorizedError } from "@/lib/error";
 
 export const SaleMetricCard = () => {
   return (
@@ -21,7 +22,9 @@ const SaleMetricFetch = async () => {
   const userReq = validateRequest();
   const ordersReq = fetchOrders();
   const [{ user }, orders] = await Promise.all([userReq, ordersReq]);
-  if (!user) throw new UnauthorizedError();
+  if (!user) throw new UnauthorizedError(UnauthorizedMessageCode.notSignIn);
+  if (user?.role !== "ADMIN")
+    throw new UnauthorizedError(UnauthorizedMessageCode.notAdmin);
   const sales = orders.reduce((acc, order) => acc + order.totalPrice, 0);
   return <p>{formatPrice(sales)} บาท</p>;
 };

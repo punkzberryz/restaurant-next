@@ -31,6 +31,7 @@ const ChangePasswordPage = ({ params }: ChangePasswordPageProps) => {
             title: "Change password",
           },
         ]}
+        role="admin"
       />
       <MaxWidthWrapper>
         <Card className="mx-auto max-w-4xl">

@@ -5,8 +5,10 @@ import { Suspense } from "react";
 import { CategoryForm } from "./components/category-form";
 import { MaxWidthWrapper } from "@/components/max-width-wrapper";
 import { Card, CardContent } from "@/components/ui/card";
-import { BadRequestError } from "@/lib/error";
+import { BadRequestError, UnauthorizedError } from "@/lib/error";
 import { CategorySkeleton } from "./components/category-skeleton";
+import { validateRequest } from "@/lib/auth";
+import { UnauthorizedMessageCode } from "@/components/error-ui";
 
 interface CategoryByIdPageProps {
   params: { categoryId: string };
@@ -25,6 +27,7 @@ const CategoryByIdPage = ({ params }: CategoryByIdPageProps) => {
             title: `${params.categoryId === "new" ? "New" : "Edit"} Category`,
           },
         ]}
+        role="admin"
       />
       <MaxWidthWrapper>
         <Card className="mx-auto max-w-4xl">
@@ -58,8 +61,15 @@ const FetchCategoryById = async ({
   const id = parseInt(categoryId);
   if (isNaN(id)) throw new BadRequestError();
   try {
-    const category = await db.category.findUnique({ where: { id } });
-    if (!category) throw new BadRequestError();
+    const validateReq = validateRequest();
+    const categoryReq = db.category.findUnique({ where: { id } });
+    const [{ user }, category] = await Promise.all([validateReq, categoryReq]);
+
+    if (!user) throw new UnauthorizedError(UnauthorizedMessageCode.notSignIn);
+    if (user?.role !== "ADMIN")
+      throw new UnauthorizedError(UnauthorizedMessageCode.notAdmin);
+
+    if (!category) throw new BadRequestError("ไม่พบหมวดหมู่อาหาร");
     return <CategoryForm isNew={false} initialData={category} title={title} />;
   } catch (error) {
     throw error;

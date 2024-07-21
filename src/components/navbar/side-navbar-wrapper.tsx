@@ -8,9 +8,11 @@ import { useToggleSideNav } from "./use-toggle-sidenav";
 
 export const SideNavbarWrapper = ({
   children,
+  role,
 }: {
   children: ReactNode;
   className?: string;
+  role: "cashier" | "admin";
 }) => {
   const { isExpanded } = useToggleSideNav();
   return (
@@ -20,6 +22,7 @@ export const SideNavbarWrapper = ({
           "fixed left-0 top-0 z-20 -translate-x-full transition-all duration-300 ease-in-out md:translate-x-0",
           isExpanded ? "w-52" : "w-14",
         )}
+        role={role}
       />
       <main
         className={cn(

@@ -1,3 +1,4 @@
+import { UnauthorizedMessageCode } from "@/components/error-ui";
 import { Skeleton } from "@/components/ui/skeleton";
 import { validateRequest } from "@/lib/auth";
 import { db } from "@/lib/db";
@@ -20,10 +21,9 @@ const FoodMetricFetch = async () => {
   const userReq = validateRequest();
   const foodCountReq = db.food.count();
   const [{ user }, foodCount] = await Promise.all([userReq, foodCountReq]);
-  if (!user) {
-    throw new UnauthorizedError();
-  }
-
+  if (!user) throw new UnauthorizedError(UnauthorizedMessageCode.notSignIn);
+  if (user?.role !== "ADMIN")
+    throw new UnauthorizedError(UnauthorizedMessageCode.notAdmin);
   return <p>{foodCount} รายการ</p>;
 };
 

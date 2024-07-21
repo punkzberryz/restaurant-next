@@ -26,6 +26,7 @@ const FoodByIadPage = ({ params }: FoodByIdPageProps) => {
             title: `${isNew ? "New" : "Edit"} Food`,
           },
         ]}
+        role="admin"
       />
       <MaxWidthWrapper>
         <Card className="mx-auto max-w-4xl">

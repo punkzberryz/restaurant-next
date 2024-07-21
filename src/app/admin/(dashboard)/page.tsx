@@ -1,4 +1,3 @@
-import { GetMe } from "@/app/get-me";
 import { MaxWidthWrapper } from "@/components/max-width-wrapper";
 import { PageHeader } from "@/components/navbar/page-header";
 import { Client } from "./components/client";
@@ -8,6 +7,10 @@ import { SaleMetricCard } from "./components/sales-metric-card";
 import { StaffMetricCard } from "./components/staff-metric-card";
 import { FetchSalesData } from "./components/chart/fetch-sale-data";
 import { Metadata } from "next";
+import { ReactNode, Suspense } from "react";
+import { validateRequest } from "@/lib/auth";
+import { UnauthorizedMessageCode } from "@/components/error-ui";
+import { UnauthorizedError } from "@/lib/error";
 
 interface DashboardPageProps {
   searchParams: {
@@ -28,6 +31,7 @@ const DashboardPage = ({ searchParams }: DashboardPageProps) => {
       <PageHeader
         title="หน้าหลัก | Dashboard"
         links={[{ href: "/admin", title: "Dashboard" }]}
+        role="admin"
       />
       <MaxWidthWrapper className="flex flex-col space-y-8">
         <div className="flex flex-wrap gap-6">
@@ -38,9 +42,19 @@ const DashboardPage = ({ searchParams }: DashboardPageProps) => {
         </div>
         <FetchSalesData salesXAxis={salesXAxis} />
         <Client />
+        {/* <ProtectedAdminRoute /> */}
       </MaxWidthWrapper>
     </>
   );
+};
+
+const ProtectedAdminRoute = async ({ children }: { children?: ReactNode }) => {
+  const { user } = await validateRequest();
+  if (!user) throw new UnauthorizedError(UnauthorizedMessageCode.notSignIn);
+  if (user?.role !== "ADMIN")
+    throw new UnauthorizedError(UnauthorizedMessageCode.notAdmin);
+
+  return <Suspense>{children}</Suspense>;
 };
 
 export default DashboardPage;

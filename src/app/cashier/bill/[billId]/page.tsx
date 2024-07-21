@@ -11,9 +11,9 @@ import { Metadata } from "next";
 import { MaxWidthWrapper } from "@/components/max-width-wrapper";
 import { Card, CardContent } from "@/components/ui/card";
 import { Suspense } from "react";
-import { Bill } from "../components/bill-schema";
 import { BillCard } from "./components/bill-card";
 import { UnauthorizedMessageCode } from "@/components/error-ui";
+import { Bill } from "@/app/admin/bill/components/bill-schema";
 interface BillByIdPageProps {
   params: { billId: string };
 }
@@ -23,14 +23,10 @@ const BillByIdPage = ({ params }: BillByIdPageProps) => {
       <PageHeader
         title="รายละเอียดการขาย | Bill Details"
         links={[
-          {
-            href: "/admin",
-            title: "Dashboard",
-          },
-          { href: "/admin/bill", title: "Bill" },
+          { href: "/cashier/bill", title: "Bill" },
           { href: "#", title: "Bill Details" },
         ]}
-        role="admin"
+        role="cashier"
       />
       <MaxWidthWrapper>
         <Card className="mx-auto max-w-4xl">
@@ -68,8 +64,6 @@ const FetchBill = async ({ id }: { id: string }) => {
     ]);
     //validate data
     if (!user) throw new UnauthorizedError(UnauthorizedMessageCode.notSignIn);
-    if (user?.role !== "ADMIN")
-      throw new UnauthorizedError(UnauthorizedMessageCode.notAdmin);
 
     if (!order || !restaurant) throw new BadRequestError();
 

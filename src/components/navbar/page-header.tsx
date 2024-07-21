@@ -20,16 +20,18 @@ export interface BreadcrumbLinkProps {
 export const PageHeader = ({
   title,
   links,
+  role,
 }: {
   title: string;
   links: BreadcrumbLinkProps[];
+  role: "cashier" | "admin";
 }) => {
   return (
     <header className="flex flex-col space-y-4 pb-4 pt-2">
       <MaxWidthWrapper className="flex items-center space-x-4 border-b pb-4 shadow-md">
         <>
           <SideNavbarToggleButton />
-          <SideNavbarMobileView />
+          <SideNavbarMobileView role={role} />
         </>
         <h1 className="hidden md:block">{title}</h1>
         {/* User Button */}

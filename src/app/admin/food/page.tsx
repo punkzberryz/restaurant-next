@@ -16,6 +16,7 @@ import Link from "next/link";
 import { Client } from "./components/client";
 import { Suspense } from "react";
 import { DataTableSkeleton } from "@/components/table/data-table-skeleton";
+import { UnauthorizedMessageCode } from "@/components/error-ui";
 
 const FoodPage = () => {
   return (
@@ -26,6 +27,7 @@ const FoodPage = () => {
           { href: "/admin", title: "Dashboard" },
           { href: "#", title: "Food" },
         ]}
+        role="admin"
       />
       <MaxWidthWrapper>
         <Card>
@@ -54,9 +56,10 @@ const FetchFoods = async () => {
   try {
     //validate user
     const { user } = await validateRequest();
-    if (!user) {
-      throw new UnauthorizedError("ไม่พบผู้ใช้");
-    }
+    if (!user) throw new UnauthorizedError(UnauthorizedMessageCode.notSignIn);
+    if (user?.role !== "ADMIN")
+      throw new UnauthorizedError(UnauthorizedMessageCode.notAdmin);
+
     const foods = await db.food.findMany({
       take: FOODS_LIMIT,
       skip: (FOODS_PAGE_ID - 1) * FOODS_LIMIT,

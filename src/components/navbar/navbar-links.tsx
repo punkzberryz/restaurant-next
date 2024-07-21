@@ -12,30 +12,38 @@ import { SignOutButton } from "./signout-button";
 import { useToggleSideNav } from "./use-toggle-sidenav";
 import Link from "next/link";
 
-export const NavLinks = () => {
+export const NavLinks = ({ role }: { role: "cashier" | "admin" }) => {
   const { isExpanded } = useToggleSideNav();
   return (
     <div className="flex flex-col space-y-4">
-      {links.map((link) => (
-        <NavLink key={link.href} {...link} isExpanded={isExpanded} />
-      ))}
+      {role === "admin"
+        ? adminLinks.map((link) => (
+            <NavLink key={link.href} {...link} isExpanded={isExpanded} />
+          ))
+        : cashierLinks.map((link) => (
+            <NavLink key={link.href} {...link} isExpanded={isExpanded} />
+          ))}
       <SignOutButton isExpanded={isExpanded} />
     </div>
   );
 };
 
-export const NavLinksForSheet = () => {
+export const NavLinksForSheet = ({ role }: { role: "cashier" | "admin" }) => {
   return (
     <div className="flex flex-col space-y-4">
-      {links.map((link) => (
-        <NavLink key={link.href} {...link} isExpanded />
-      ))}
+      {role === "admin"
+        ? adminLinks.map((link) => (
+            <NavLink key={link.href} {...link} isExpanded />
+          ))
+        : cashierLinks.map((link) => (
+            <NavLink key={link.href} {...link} isExpanded />
+          ))}
       <SignOutButton isExpanded />
     </div>
   );
 };
 
-export const NavLink = ({
+const NavLink = ({
   href,
   title,
   icon: Icon,
@@ -56,7 +64,7 @@ export const NavLink = ({
   );
 };
 
-export const links: {
+const adminLinks: {
   href: string;
   title: string;
   icon: LucideIcon;
@@ -88,6 +96,24 @@ export const links: {
   },
   {
     href: "/admin/bill",
+    title: "รายการบิล",
+    icon: Banknote,
+  },
+];
+
+const cashierLinks: {
+  href: string;
+  title: string;
+  icon: LucideIcon;
+}[] = [
+  {
+    href: "/cashier",
+    title: "หน้าหลัก/สั่งอาหาร",
+    icon: HomeIcon,
+  },
+
+  {
+    href: "/cashier/bill",
     title: "รายการบิล",
     icon: Banknote,
   },

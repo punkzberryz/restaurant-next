@@ -8,6 +8,7 @@ import {
 import Link from "next/link";
 import { SignUpForm } from "./components/form/signup-form";
 import { Metadata } from "next";
+import { FetchUserOnAuth } from "../components/fetch-user";
 
 const SignUpPage = () => {
   return (
@@ -21,13 +22,15 @@ const SignUpPage = () => {
           </CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col space-y-4">
-          <SignUpForm />
-          <Link
-            className="text-center text-indigo-600 hover:text-indigo-400 hover:underline"
-            href="/auth/signin"
-          >
-            ล็อคอินเข้าสู่ระบบ
-          </Link>
+          <FetchUserOnAuth>
+            <SignUpForm />
+            <Link
+              className="text-center text-indigo-600 hover:text-indigo-400 hover:underline"
+              href="/auth/signin"
+            >
+              ล็อคอินเข้าสู่ระบบ
+            </Link>
+          </FetchUserOnAuth>
         </CardContent>
       </Card>
     </div>

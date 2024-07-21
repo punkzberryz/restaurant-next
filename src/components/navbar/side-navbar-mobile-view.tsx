@@ -12,7 +12,11 @@ import { Separator } from "../ui/separator";
 import { Logo } from "../icons";
 
 //For below md screen
-export const SideNavbarMobileView = () => {
+export const SideNavbarMobileView = ({
+  role,
+}: {
+  role: "cashier" | "admin";
+}) => {
   return (
     <Sheet>
       <SheetTrigger className="md:hidden" asChild>
@@ -36,7 +40,7 @@ export const SideNavbarMobileView = () => {
         <Separator />
         {/* Menu */}
         <div className="mx-auto w-fit py-10">
-          <NavLinksForSheet />
+          <NavLinksForSheet role={role} />
         </div>
       </SheetContent>
     </Sheet>

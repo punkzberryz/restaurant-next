@@ -1,21 +1,21 @@
+import { UnauthorizedMessageCode } from "@/components/error-ui";
 import { MaxWidthWrapper } from "@/components/max-width-wrapper";
 import { PageHeader } from "@/components/navbar/page-header";
+import { DataTableSkeleton } from "@/components/table/data-table-skeleton";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
-import { Metadata } from "next";
-import { Suspense } from "react";
-import { unstable_noStore as noStore } from "next/cache";
+import { Skeleton } from "@/components/ui/skeleton";
 import { validateRequest } from "@/lib/auth";
+import { db } from "@/lib/db";
 import {
   catchErrorTypeChecker,
   ErrorType,
   UnauthorizedError,
 } from "@/lib/error";
-import { db } from "@/lib/db";
-import { OrderForm } from "./components/order-form";
 import { Food } from "@prisma/client";
-import { Skeleton } from "@/components/ui/skeleton";
-import { DataTableSkeleton } from "@/components/table/data-table-skeleton";
-import { UnauthorizedMessageCode } from "@/components/error-ui";
+import { Metadata } from "next";
+import { unstable_noStore } from "next/cache";
+import React, { Suspense } from "react";
+import { OrderForm } from "./components/order-form";
 
 //For now it will be staff who creates Order for customer
 //So we will need to validate user before creating order
@@ -24,21 +24,13 @@ const OrderPage = () => {
     <>
       <PageHeader
         title="จัดการออเดอร์ลูกค้า | Order"
-        links={[
-          {
-            href: "/admin",
-            title: "Dashboard",
-          },
-          { href: "/admin/bill", title: "Bill" },
-          { href: "#", title: "Order" },
-        ]}
-        role="admin"
+        links={[]}
+        role="cashier"
       />
       <MaxWidthWrapper>
         <Card className="mx-auto max-w-4xl">
           <CardContent className="flex flex-col space-y-8 p-6">
             <CardTitle>จัดการออเดอร์ลูกค้า</CardTitle>
-
             <Suspense fallback={<OrderFormSkeleton />}>
               <FetchMenu />
             </Suspense>
@@ -63,19 +55,24 @@ const OrderFormSkeleton = () => {
 };
 
 const FetchMenu = async () => {
-  noStore();
+  unstable_noStore();
 
   try {
     //validate user
-    const { user } = await validateRequest();
-    if (!user) throw new UnauthorizedError(UnauthorizedMessageCode.notSignIn);
-    if (user?.role !== "ADMIN")
-      throw new UnauthorizedError(UnauthorizedMessageCode.notAdmin);
+    const validateReq = validateRequest();
 
     //fetch data
-    const categoriesAndFoods = await db.category.findMany({
+    const categoriesAndFoodsReq = db.category.findMany({
       include: {
         foods: {
+          include: {
+            images: {
+              take: 1,
+              select: {
+                url: true,
+              },
+            },
+          },
           orderBy: {
             id: "desc",
           },
@@ -85,10 +82,26 @@ const FetchMenu = async () => {
         id: "desc",
       },
     });
-    const foods: (Food & { category: string })[] = [];
+    const [categoriesAndFoods, { user }] = await Promise.all([
+      categoriesAndFoodsReq,
+      validateReq,
+    ]);
+
+    if (!user) throw new UnauthorizedError(UnauthorizedMessageCode.notSignIn);
+    if (user?.role !== "ADMIN" && user?.role !== "USER")
+      throw new UnauthorizedError(UnauthorizedMessageCode.notAuthorized);
+
+    const foods: (Food & { category: string } & { image: { url?: string } })[] =
+      [];
     categoriesAndFoods.forEach((category) => {
       category.foods.forEach((food) => {
-        foods.push({ ...food, category: category.name });
+        foods.push({
+          ...food,
+          category: category.name,
+          image: {
+            url: food.images[0]?.url,
+          },
+        });
       });
     });
     return <OrderForm menu={foods} />;
@@ -102,6 +115,7 @@ const FetchMenu = async () => {
 };
 
 export default OrderPage;
+
 export const metadata: Metadata = {
   title: "จัดการออเดอร์ลูกค้า | Order",
   description: "จัดการออเดอร์ลูกค้า",

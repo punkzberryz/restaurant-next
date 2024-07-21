@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/card";
 import Link from "next/link";
 import { SignInForm } from "./components/form/signin-form";
+import { FetchUserOnAuth } from "../components/fetch-user";
 const SignInPage = () => {
   return (
     <div className="flex flex-col space-y-4">
@@ -20,13 +21,15 @@ const SignInPage = () => {
           </CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col space-y-4">
-          <SignInForm />
-          <Link
-            className="text-center text-indigo-600 hover:text-indigo-400 hover:underline"
-            href="/auth/signup"
-          >
-            สมัครสมาชิก
-          </Link>
+          <FetchUserOnAuth>
+            <SignInForm />
+            <Link
+              className="text-center text-indigo-600 hover:text-indigo-400 hover:underline"
+              href="/auth/signup"
+            >
+              สมัครสมาชิก
+            </Link>
+          </FetchUserOnAuth>
         </CardContent>
       </Card>
     </div>

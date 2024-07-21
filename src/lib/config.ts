@@ -1,5 +1,5 @@
 export const config = {
-  baseUrl: process.env.URL ?? "http://localhost:3000",
+  baseUrl: process.env.NEXT_PUBLIC_URL ?? "http://localhost:3000",
   cloudinary: {
     apiSecret: process.env.CLOUDINARY_API_SECRET,
     apiKey: process.env.CLOUDINARY_API_KEY,
