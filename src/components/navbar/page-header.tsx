@@ -1,5 +1,3 @@
-import { Button } from "@/components/ui/button";
-import { Menu } from "lucide-react";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -11,6 +9,8 @@ import { Fragment } from "react";
 import { MaxWidthWrapper } from "../max-width-wrapper";
 import { AuthNav } from "./auth-nav";
 import ThemeToggleButton from "../theme-toggle-button";
+import { SideNavbarToggleButton } from "./side-navbar-toggle-button";
+import { SideNavbarMobileView } from "./side-navbar-mobile-view";
 
 export interface BreadcrumbLinkProps {
   href: string;
@@ -27,9 +27,10 @@ export const PageHeader = ({
   return (
     <header className="flex flex-col space-y-4 pb-4 pt-2">
       <MaxWidthWrapper className="flex items-center space-x-4 border-b pb-4 shadow-md">
-        <Button size="icon" className="h-7 w-7">
-          <Menu className="h-5 w-5" />
-        </Button>
+        <>
+          <SideNavbarToggleButton />
+          <SideNavbarMobileView />
+        </>
         <h1 className="hidden md:block">{title}</h1>
         {/* User Button */}
         <div className="flex-1">

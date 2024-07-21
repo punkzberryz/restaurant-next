@@ -1,9 +1,7 @@
 import { MaxWidthWrapper } from "@/components/max-width-wrapper";
 import { PageHeader } from "@/components/navbar/page-header";
-import { DataTable } from "@/components/table/data-table";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { Metadata } from "next";
-import { userColumnDef } from "./components/user-column-def";
 import { db } from "@/lib/db";
 import { unstable_noStore as noStore } from "next/cache";
 import {

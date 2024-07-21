@@ -14,13 +14,16 @@ import {
 import React, { useState } from "react";
 import { signoutAction } from "./signout-action";
 import { DropdownMenuItem } from "../ui/dropdown-menu";
+import { useToggleSideNav } from "./use-toggle-sidenav";
 
 export const SignOutButton = ({
   variant,
   className,
+  isExpanded,
 }: {
   className?: string;
   variant?: ButtonProps["variant"];
+  isExpanded: boolean;
 }) => {
   const router = useRouter();
   const [open, setOpen] = useState(false);
@@ -28,12 +31,14 @@ export const SignOutButton = ({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant={variant}>
-          <div className={className ?? "flex w-full items-center"}>
-            <LogOut className="mr-3 h-6 w-6" />
-            <span>ออกจากระบบ</span>
-          </div>
-        </Button>
+        <div
+          className={
+            className ?? "mx-4 flex w-full cursor-pointer items-center"
+          }
+        >
+          <LogOut className="mr-3 h-6 w-6" />
+          <span hidden={!isExpanded}>ออกจากระบบ</span>
+        </div>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>

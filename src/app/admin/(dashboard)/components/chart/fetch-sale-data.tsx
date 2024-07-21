@@ -9,7 +9,7 @@ import { subMonths } from "date-fns";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SalesGroupbyButtons } from "./sales-groupby-buttons";
-import { delay } from "@/lib/delay";
+
 interface FetchSalesDataProps {
   salesXAxis?: "month" | "year";
 }
@@ -45,7 +45,6 @@ export const FetchSalesData = ({ salesXAxis }: FetchSalesDataProps) => {
 };
 
 const FetchSalesDataAsync = async ({ salesXAxis }: FetchSalesDataProps) => {
-  await delay(1000);
   const validateReq = validateRequest();
   const ordersReq = fetchOrders({ salesXAxis });
   const [{ user }, salesPerDay] = await Promise.all([validateReq, ordersReq]);
