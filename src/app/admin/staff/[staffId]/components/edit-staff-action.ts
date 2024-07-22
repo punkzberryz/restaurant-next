@@ -27,7 +27,7 @@ export const editStaffAction = async ({
     if (!staff) {
       throw new BadRequestError();
     }
-    if (user.role !== "ADMIN" || staff.id !== user.id) {
+    if (user.role !== "ADMIN" && staff.id !== user.id) {
       throw new UnauthorizedError();
     }
 

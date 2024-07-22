@@ -9,6 +9,7 @@ import {
 import Link from "next/link";
 import { SignInForm } from "./components/form/signin-form";
 import { FetchUserOnAuth } from "../components/fetch-user";
+import { AdsInfo } from "../components/ads-info";
 const SignInPage = () => {
   return (
     <div className="flex flex-col space-y-4">
@@ -30,6 +31,7 @@ const SignInPage = () => {
               สมัครสมาชิก
             </Link>
           </FetchUserOnAuth>
+          <AdsInfo />
         </CardContent>
       </Card>
     </div>
