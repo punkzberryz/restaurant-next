@@ -9,6 +9,7 @@ import Link from "next/link";
 import { SignUpForm } from "./components/form/signup-form";
 import { Metadata } from "next";
 import { FetchUserOnAuth } from "../components/fetch-user";
+import { AdsInfo } from "../components/ads-info";
 
 const SignUpPage = () => {
   return (
@@ -31,6 +32,7 @@ const SignUpPage = () => {
               ล็อคอินเข้าสู่ระบบ
             </Link>
           </FetchUserOnAuth>
+          <AdsInfo />
         </CardContent>
       </Card>
     </div>
