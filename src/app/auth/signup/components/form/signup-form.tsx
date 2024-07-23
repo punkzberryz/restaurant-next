@@ -81,29 +81,3 @@ export const SignUpForm = () => {
   );
 };
 const handleFormError = (error: FieldErrors<SignUpSchema>) => {};
-
-const signUpQuery = async ({ data }: { data: SignUpSchema }) => {
-  try {
-    const resp = await fetch("/auth/signup/fetch", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ data }),
-    });
-
-    if (!resp.ok) {
-      throw new Error("error");
-    }
-
-    const { error, session, user } = (await resp.json()) as {
-      user: User | null;
-      session: Session | null;
-      error: { message: string; code: number } | null;
-    };
-
-    return { user, session, error };
-  } catch (err) {
-    throw err;
-  }
-};
