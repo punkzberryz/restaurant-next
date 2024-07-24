@@ -45,8 +45,7 @@ export default function Error({
   return (
     <ErrorUi title="อุ๊ปปปซ์">
       <p className="pb-5 text-base font-light md:text-lg">
-        <span>เกิดข้อผิดพลาดเนื่องจาก...</span>
-        <span>{error.message}</span>
+        <span>เกิดข้อมูลผิดในการดึงข้อมูล</span>
       </p>
       <div className="grid grid-cols-1 gap-y-4">
         <Button
