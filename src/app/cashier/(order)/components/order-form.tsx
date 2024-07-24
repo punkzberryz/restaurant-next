@@ -73,7 +73,7 @@ const useOrderForm = () => {
     toast.success("สร้างออเดอร์สำเร็จ");
     setLoading(false);
     router.refresh();
-    router.push("/admin/bill");
+    router.push(`/cashier/bill/${order.id}`);
   };
   return { loading, handleFormSubmit };
 };

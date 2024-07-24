@@ -17,6 +17,7 @@ export const createCategoryAction = async ({
   try {
     //Validate data
     const result = categorySchema.safeParse(data);
+
     if (!result.success) {
       throw new BadRequestError();
     }
@@ -25,14 +26,17 @@ export const createCategoryAction = async ({
     if (!user || user.role !== "ADMIN") {
       throw new UnauthorizedError();
     }
+
     const category = await db.category.create({
-      data,
+      data: {
+        name: data.name,
+      },
     });
 
     return { category };
   } catch (err) {
     const error = catchErrorForServerActionHelper(err);
-    console.log({ error });
+
     return { error };
   }
 };
