@@ -23,7 +23,10 @@ export enum UnauthorizedMessageCode {
 }
 
 export const getMessageIfUnauthorized = (message?: string) => {
+  console.log("[got message] \n", message);
   if (!message) return;
+  const newmessage = UnauthorizedMessage[message];
+  console.log("[new message] \n", newmessage);
   return UnauthorizedMessage[message];
 };
 
