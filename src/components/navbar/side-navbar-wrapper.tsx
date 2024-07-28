@@ -33,8 +33,8 @@ export const SideNavbarWrapper = ({
         {children}
       </main>
       <Footer
-        clasName={cn(
-          " transition-[margin-left] duration-300 ease-in-out",
+        className={cn(
+          "transition-[margin-left] duration-300 ease-in-out",
           isExpanded ? "md:ml-52" : "md:ml-14",
         )}
       />

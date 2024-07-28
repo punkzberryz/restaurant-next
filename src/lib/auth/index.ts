@@ -4,6 +4,8 @@ import { COOKIE_NAME } from "../config";
 import { User } from "@prisma/client";
 import { cookies } from "next/headers";
 import { cache } from "react";
+export * from "./oauth-setup";
+
 export const lucia = new Lucia(dbAdapter, {
   sessionCookie: {
     // this sets cookies with super long expiration
