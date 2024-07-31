@@ -43,7 +43,7 @@ export const Client = ({ initialData, limit }: ClientProps) => {
   useEffect(() => {
     if (!isPlaceholderData && data.hasMore) {
       queryClient.prefetchQuery({
-        queryKey: ["getManyCategoriesAction", pageId + 1],
+        queryKey: ["getManyFoods", pageId + 1],
         queryFn: () => getManyFoods({ pageId: pageId + 1, limit: pageLimit }),
       });
     }
